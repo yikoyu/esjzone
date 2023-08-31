@@ -1,7 +1,7 @@
 /*
  * @Date: 2023-08-25 10:42:23
  * @LastEditors: yikoyu 2282373181@qq.com
- * @LastEditTime: 2023-08-25 11:14:42
+ * @LastEditTime: 2023-08-26 10:44:24
  * @FilePath: \esjzone\lib\app\utils\esjzone\esjzone_url.dart
  */
 // ignore_for_file: non_constant_identifier_names
@@ -31,4 +31,7 @@ abstract class EsjzoneUrl {
 
   /// 登录
   static String POST_MEM_LOGIN = '/inc/mem_login.php';
+
+  /// 小说详情页
+  static String GET_NOVEL_DETAIL({required String id}) => '/detail/$id.html';
 }

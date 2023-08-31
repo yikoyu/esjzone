@@ -1,7 +1,7 @@
 /*
  * @Date: 2023-08-22 14:47:36
  * @LastEditors: yikoyu 2282373181@qq.com
- * @LastEditTime: 2023-08-24 16:34:55
+ * @LastEditTime: 2023-08-29 21:07:14
  * @FilePath: \esjzone\lib\app\modules\search_novels\views\search_novels_view.dart
  */
 import 'package:flutter/material.dart';
@@ -14,11 +14,16 @@ import 'package:get/get.dart';
 import '../controllers/search_novels_controller.dart';
 
 class SearchNovelsView extends GetView<SearchNovelsController> {
-  const SearchNovelsView({Key? key}) : super(key: key);
+  const SearchNovelsView({Key? key, this.uniqueTag}) : super(key: key);
+
+  final String? uniqueTag;
+
+  @override
+  String? get tag => uniqueTag;
 
   @override
   Widget build(BuildContext context) {
-    Get.put(SearchNovelsController());
+    Get.put(SearchNovelsController(), tag: uniqueTag);
 
     return Scaffold(
       appBar: AppBarSearch(

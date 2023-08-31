@@ -1,7 +1,7 @@
 /*
  * @Date: 2023-08-18 11:05:20
  * @LastEditors: yikoyu 2282373181@qq.com
- * @LastEditTime: 2023-08-18 11:15:29
+ * @LastEditTime: 2023-08-29 17:02:42
  * @FilePath: \esjzone\lib\app\widgets\cached_image.dart
  */
 import 'package:cached_network_image/cached_network_image.dart';
@@ -11,9 +11,12 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 class CachedImage extends StatelessWidget {
   final String? image;
   final String placeholder;
+  final bool showLoading;
 
   const CachedImage(this.image,
-      {super.key, this.placeholder = 'assets/images/novel-default.jpg'});
+      {super.key,
+      this.placeholder = 'assets/images/novel-default.jpg',
+      this.showLoading = true});
 
   @override
   Widget build(BuildContext context) {
@@ -25,6 +28,10 @@ class CachedImage extends StatelessWidget {
             fit: BoxFit.cover,
             imageUrl: image!,
             placeholder: (context, url) {
+              if (!showLoading) {
+                return const SizedBox();
+              }
+
               return Container(
                   color: colorScheme.background,
                   child: SpinKitCubeGrid(

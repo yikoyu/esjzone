@@ -1,15 +1,19 @@
 /*
  * @Date: 2023-08-18 21:34:50
  * @LastEditors: yikoyu 2282373181@qq.com
- * @LastEditTime: 2023-08-18 22:32:21
- * @FilePath: \esjzone\lib\app\modules\novels\widgets\novel_list_card.dart
+ * @LastEditTime: 2023-08-31 14:19:15
+ * @FilePath: \esjzone\lib\app\widgets\novel_list_card.dart
  */
+import 'package:esjzone/app/modules/novel_detail/controllers/novel_detail_controller.dart';
+import 'package:esjzone/app/modules/novel_detail/views/novel_detail_view.dart';
+import 'package:esjzone/app/modules/search_novels/views/search_novels_view.dart';
 import 'package:flutter/material.dart';
 import 'package:esjzone/app/data/novel_list_model.dart';
 import 'package:esjzone/app/widgets/cached_image.dart';
 import 'package:esjzone/app/widgets/icon_text.dart';
 import 'package:esjzone/app/widgets/link_text.dart';
 import 'package:esjzone/app/widgets/option_grid_view.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 import 'package:get/get.dart';
 import 'package:styled_widget/styled_widget.dart';
@@ -23,14 +27,17 @@ class NovelListCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
       margin: const EdgeInsets.fromLTRB(12, 12, 12, 0),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: [
-          AspectRatio(aspectRatio: 0.6875, child: _buildImage(item)).width(134),
-          Expanded(child: _buildCardDetail(item))
-        ],
-      ),
+      child: InkWell(
+          onTap: () => _toNovelDetail(item),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              AspectRatio(aspectRatio: 0.6875, child: _buildImage(item))
+                  .width(134),
+              Expanded(child: _buildCardDetail(item))
+            ],
+          )),
     );
   }
 
@@ -74,7 +81,7 @@ class NovelListCard extends StatelessWidget {
 
     return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
       title,
-      LinkText(item.author, onTap: () => debugPrint('跳转作者页'))
+      LinkText(item.author, onTap: () => _toSearchAuthor(item.author))
           .padding(bottom: 4),
       LinkText(item.lastEp, onTap: () => debugPrint('跳转章节页'))
           .padding(bottom: 4),
@@ -83,5 +90,42 @@ class NovelListCard extends StatelessWidget {
           rowCount: 2,
           itemBuilder: (context, index) => iconTextList[index])
     ]).paddingAll(12);
+  }
+
+  Future<void> _toNovelDetail(NovelList item) async {
+    if (item.id == null) {
+      Get
+        ..closeAllSnackbars()
+        ..snackbar('提示', '小说链接解析错误',
+            backgroundColor: Colors.red.shade200, colorText: Colors.white);
+    }
+
+    // item.id = '1688963190';
+    // item.id = '1660575572';
+    // item.id = '1600468706'; // 章节链接错误案例
+
+    EasyLoading.show(status: '加载中...', maskType: EasyLoadingMaskType.black);
+
+    NovelDetailController novelDetail =
+        Get.put(NovelDetailController(), tag: item.id);
+
+    try {
+      await novelDetail.getNovelDetailData(item.id!);
+      await EasyLoading.dismiss();
+
+      await Get.to(() => NovelDetailView(uniqueTag: item.id),
+          transition: Transition.rightToLeft);
+      Get.delete<NovelDetailController>(tag: item.id);
+    } catch (e) {
+      EasyLoading.dismiss();
+      Get.delete<NovelDetailController>(tag: item.id);
+    }
+  }
+
+  void _toSearchAuthor(String? author) {
+    if (item.author != null && item.author!.isNotEmpty) {
+      Get.to(() => SearchNovelsView(uniqueTag: item.author),
+          arguments: {'search': item.author}, transition: Transition.fadeIn);
+    }
   }
 }

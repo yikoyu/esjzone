@@ -1,12 +1,13 @@
 /*
  * @Date: 2023-08-09 11:58:17
  * @LastEditors: yikoyu 2282373181@qq.com
- * @LastEditTime: 2023-08-24 16:13:42
+ * @LastEditTime: 2023-08-30 21:39:06
  * @FilePath: \esjzone\lib\main.dart
  */
 
 import 'package:flutter/material.dart';
 import 'package:esjzone/app/utils/app_theme_data.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
 import 'package:get/get.dart';
@@ -38,6 +39,7 @@ Future<void> main() async {
         title: Env.envConfig.appTitle,
         initialRoute: AppPages.INITIAL,
         getPages: AppPages.routes,
+        builder: EasyLoading.init(),
         // theme
         theme: AppThemeData.light(),
         darkTheme: AppThemeData.dark(),

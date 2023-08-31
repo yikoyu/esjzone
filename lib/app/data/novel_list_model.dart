@@ -1,10 +1,11 @@
 /*
  * @Date: 2023-08-15 14:38:07
  * @LastEditors: yikoyu 2282373181@qq.com
- * @LastEditTime: 2023-08-18 20:58:40
+ * @LastEditTime: 2023-08-29 10:21:12
  * @FilePath: \esjzone\lib\app\data\novel_list_model.dart
  */
 class NovelList {
+  String? id;
   String? title;
   String? link;
   String? img;
@@ -20,7 +21,8 @@ class NovelList {
   bool? xRated;
 
   NovelList(
-      {this.title,
+      {this.id,
+      this.title,
       this.link,
       this.img,
       this.author,
@@ -35,6 +37,7 @@ class NovelList {
       this.xRated});
 
   NovelList.fromJson(Map<String, dynamic> json) {
+    id = json['id'];
     title = json['title'];
     link = json['link'];
     img = json['img'];
@@ -52,6 +55,7 @@ class NovelList {
 
   Map<String, dynamic> toJson() {
     final data = <String, dynamic>{};
+    data['id'] = id;
     data['title'] = title;
     data['link'] = link;
     data['img'] = img;

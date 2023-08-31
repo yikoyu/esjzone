@@ -1,7 +1,7 @@
 /*
  * @Date: 2023-08-24 13:40:07
  * @LastEditors: yikoyu 2282373181@qq.com
- * @LastEditTime: 2023-08-25 21:39:41
+ * @LastEditTime: 2023-08-29 21:08:20
  * @FilePath: \esjzone\lib\app\modules\searching\controllers\searching_controller.dart
  */
 import 'package:flutter/material.dart';
@@ -56,7 +56,7 @@ class SearchingController extends GetxController {
       storage.write(historyTagList);
     }
 
-    await Get.to(() => const SearchNovelsView(),
+    await Get.to(() => SearchNovelsView(uniqueTag: value),
         arguments: {'search': value}, transition: Transition.fadeIn);
 
     debugPrint('返回');
