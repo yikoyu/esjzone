@@ -1,0 +1,32 @@
+{
+  "home": "首页",
+  "novels": "小说",
+  "profile": "我的",
+
+  "pull_to_refresh": "下拉刷新",
+  "Pull_to_load": "上拉加载",
+  "release_ready": "释放开始",
+  "refreshing": "刷新中...",
+  "loading": "加载中...",
+  "succeeded": "成功了",
+  "failed": "失败了",
+  "no_more": "没有更多",
+  "last_updated_at_time": "最后更新于 %T",
+
+  "latest_updates": "最新更新",
+  "newly_listed": "最新上架",
+  "top_rated": "最高评分",
+  "most_viewed": "最多观看",
+  "most_articles": "最多文章",
+  "most_discussed": "最多讨论",
+  "most_favorites": "最多收藏",
+  "most_words": "最多字数",
+
+  "all_novels": "全部",
+  "japanese_novels": "日轻",
+  "original_novels": "原创",
+  "korean_novels": "韩轻",
+
+  "please_enter_keywords": "请输入关键字",
+  "search": "搜索"
+}

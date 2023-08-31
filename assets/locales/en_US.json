@@ -1,0 +1,32 @@
+{
+  "home": "Home",
+  "novels": "Novels",
+  "profile": "Profile",
+
+  "pull_to_refresh": "Pull to refresh",
+  "Pull_to_load": "Pull to load",
+  "release_ready": "Release ready",
+  "refreshing": "Refreshing...",
+  "loading": "Loading...",
+  "succeeded": "Succeeded",
+  "failed": "Failed",
+  "no_more": "No more",
+  "last_updated_at_time": "Last updated at %T",
+
+  "latest_updates": "Latest Updates",
+  "newly_listed": "Newly Listed",
+  "top_rated": "Top Rated",
+  "most_viewed": "Most Viewed",
+  "most_articles": "Most Articles",
+  "most_discussed": "Most Discussed",
+  "most_favorites": "Most Favorites",
+  "most_words": "Most Words",
+
+  "all_novels": "All Novels",
+  "japanese_novels": "Japanese Novels",
+  "original_novels": "Original Novels",
+  "korean_novels": "Korean Novels",
+
+  "please_enter_keywords": "Please enter keywords",
+  "search": "Search"
+}
