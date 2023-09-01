@@ -1,7 +1,7 @@
 /*
  * @Date: 2023-08-24 10:32:36
  * @LastEditors: yikoyu 2282373181@qq.com
- * @LastEditTime: 2023-08-25 12:07:15
+ * @LastEditTime: 2023-09-01 20:32:15
  * @FilePath: \esjzone\lib\app\modules\search_novels\controllers\search_novels_controller.dart
  */
 /*
@@ -21,11 +21,17 @@ class SearchNovelsController extends GetxController {
   EasyRefreshController easyRefreshController = EasyRefreshController(
       controlFinishLoad: true, controlFinishRefresh: true);
 
-  final String? search = Get.arguments["search"];
+  late final String? search;
   SortLabel sortValue = SortLabel.updated;
   CategoryLabel categoryValue = CategoryLabel.all;
   var novelList = <NovelList>[].obs;
   int page = 1;
+
+  @override
+  void onInit() {
+    search = Get.arguments["search"];
+    super.onInit();
+  }
 
   @override
   void onClose() {

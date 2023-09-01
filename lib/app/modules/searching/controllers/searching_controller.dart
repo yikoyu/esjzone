@@ -1,7 +1,7 @@
 /*
  * @Date: 2023-08-24 13:40:07
  * @LastEditors: yikoyu 2282373181@qq.com
- * @LastEditTime: 2023-08-29 21:08:20
+ * @LastEditTime: 2023-09-01 20:14:29
  * @FilePath: \esjzone\lib\app\modules\searching\controllers\searching_controller.dart
  */
 import 'package:flutter/material.dart';
@@ -12,7 +12,7 @@ import 'package:get/get.dart';
 class SearchingController extends GetxController {
   final storage = AppStorage<List<String>>(AppStorageKeys.searchHistoryTagList);
   final FocusNode focusNode = FocusNode();
-  var hotTagList = <String>[].obs;
+
   var historyTagList = <String>[].obs;
 
   @override

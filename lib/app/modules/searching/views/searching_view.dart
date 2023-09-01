@@ -4,8 +4,8 @@
  * @LastEditTime: 2023-08-25 21:41:02
  * @FilePath: \esjzone\lib\app\modules\searching\views\searching_view.dart
  */
+import 'package:esjzone/app/modules/novels/controllers/novels_controller.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:esjzone/app/widgets/app_bar_search.dart';
 
 import 'package:get/get.dart';
@@ -18,8 +18,6 @@ class SearchingView extends GetView<SearchingController> {
   @override
   Widget build(BuildContext context) {
     Get.put(SearchingController());
-
-    debugPaintSizeEnabled = false;
 
     return Scaffold(
       appBar: AppBarSearch(
@@ -57,13 +55,15 @@ class SearchingView extends GetView<SearchingController> {
   }
 
   Widget _buildHot() {
+    final novel = Get.find<NovelsController>();
+
     return Obx(() => Column(
           crossAxisAlignment: CrossAxisAlignment.start,
-          children: controller.hotTagList.isNotEmpty
+          children: novel.hotTagList.isNotEmpty
               ? [
                   _buildTagTitle(title: '热门搜索'),
                   Obx(() =>
-                      _buildTagWrap(controller.hotTagList, controller.goResult))
+                      _buildTagWrap(novel.hotTagList, controller.goResult))
                 ]
               : [],
         ));

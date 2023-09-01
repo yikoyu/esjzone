@@ -1,13 +1,12 @@
 /*
  * @Date: 2023-08-15 15:11:36
  * @LastEditors: yikoyu 2282373181@qq.com
- * @LastEditTime: 2023-08-25 17:07:47
+ * @LastEditTime: 2023-09-01 20:13:42
  * @FilePath: \esjzone\lib\app\modules\novels\controllers\novels_controller.dart
  */
 import 'package:easy_refresh/easy_refresh.dart';
 import 'package:flutter/material.dart';
 import 'package:esjzone/app/data/novel_list_model.dart';
-import 'package:esjzone/app/modules/searching/controllers/searching_controller.dart';
 import 'package:esjzone/app/utils/enum.dart';
 import 'package:esjzone/app/utils/esjzone/esjzone.dart';
 import 'package:get/get.dart';
@@ -16,11 +15,10 @@ class NovelsController extends GetxController {
   EasyRefreshController easyRefreshController = EasyRefreshController(
       controlFinishLoad: true, controlFinishRefresh: true);
 
-  SearchingController searching = Get.put(SearchingController());
-
   SortLabel sortValue = SortLabel.updated;
   CategoryLabel categoryValue = CategoryLabel.all;
   var novelList = <NovelList>[].obs;
+  var hotTagList = <String>[].obs; // searching 页面用
   int page = 1;
 
   @override
@@ -52,9 +50,7 @@ class NovelsController extends GetxController {
             page: page, category: categoryValue, sort: sortValue));
 
     List<NovelList> value = await esjzone.novelList();
-    List<String> hotTagList = await esjzone.hotTagList();
-    // 提前向 searching 页面赋值
-    searching.hotTagList.value = hotTagList;
+    hotTagList.value = await esjzone.hotTagList();
 
     debugPrint('热门标签 > $hotTagList');
 
