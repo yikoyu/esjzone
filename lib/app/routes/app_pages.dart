@@ -6,6 +6,8 @@ import '../modules/index/bindings/index_binding.dart';
 import '../modules/index/views/index_view.dart';
 import '../modules/novel_detail/bindings/novel_detail_binding.dart';
 import '../modules/novel_detail/views/novel_detail_view.dart';
+import '../modules/novel_read/bindings/novel_read_binding.dart';
+import '../modules/novel_read/views/novel_read_view.dart';
 import '../modules/novels/bindings/novels_binding.dart';
 import '../modules/novels/views/novels_view.dart';
 import '../modules/profile/bindings/profile_binding.dart';
@@ -57,6 +59,11 @@ class AppPages {
       name: _Paths.NOVEL_DETAIL,
       page: () => const NovelDetailView(),
       binding: NovelDetailBinding(),
+    ),
+    GetPage(
+      name: _Paths.NOVEL_READ,
+      page: () => const NovelReadView(),
+      binding: NovelReadBinding(),
     ),
   ];
 }

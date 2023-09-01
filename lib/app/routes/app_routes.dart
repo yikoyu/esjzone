@@ -10,6 +10,7 @@ abstract class Routes {
   static const SEARCH_NOVELS = _Paths.SEARCH_NOVELS;
   static const SEARCHING = _Paths.SEARCHING;
   static const NOVEL_DETAIL = _Paths.NOVEL_DETAIL;
+  static const NOVEL_READ = _Paths.NOVEL_READ;
 }
 
 abstract class _Paths {
@@ -21,4 +22,5 @@ abstract class _Paths {
   static const SEARCH_NOVELS = '/search-novels';
   static const SEARCHING = '/searching';
   static const NOVEL_DETAIL = '/novel-detail';
+  static const NOVEL_READ = '/novel-read';
 }

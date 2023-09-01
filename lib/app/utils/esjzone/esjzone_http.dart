@@ -1,7 +1,7 @@
 /*
  * @Date: 2023-08-25 10:40:24
  * @LastEditors: yikoyu 2282373181@qq.com
- * @LastEditTime: 2023-08-26 14:59:14
+ * @LastEditTime: 2023-08-31 16:21:23
  * @FilePath: \esjzone\lib\app\utils\esjzone\esjzone_http.dart
  */
 import 'dart:convert';
@@ -44,6 +44,15 @@ class EsjzoneHttp {
   /// 获取小说详情页
   static Future<String> getNovelDetialPage(String id) async {
     String data = await HttpUtils.get(EsjzoneUrl.GET_NOVEL_DETAIL(id: id));
+
+    return data;
+  }
+
+  /// 获取小说阅读页
+  static Future<String> getNovelReadPage(
+      String novelId, String chapterId) async {
+    String data = await HttpUtils.get(
+        EsjzoneUrl.GET_NOVEL_READ(novelId: novelId, chapterId: chapterId));
 
     return data;
   }

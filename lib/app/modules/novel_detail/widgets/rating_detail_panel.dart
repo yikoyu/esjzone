@@ -1,7 +1,7 @@
 /*
  * @Date: 2023-08-30 16:14:29
  * @LastEditors: yikoyu 2282373181@qq.com
- * @LastEditTime: 2023-08-30 22:17:44
+ * @LastEditTime: 2023-09-01 10:42:10
  * @FilePath: \esjzone\lib\app\modules\novel_detail\widgets\rating_detail_panel.dart
  */
 import 'package:flutter/material.dart';
@@ -99,7 +99,7 @@ class RatingDetailPanel extends StatelessWidget {
                   rating: i.toDouble(), itemCount: i, itemSize: 8)
               .paddingOnly(right: 6),
           LinearProgressIndicator(
-                  value: (v / rateTotal),
+                  value: rateTotal == 0 ? 0 : (v / rateTotal),
                   valueColor: const AlwaysStoppedAnimation(Colors.amber))
               .width(80)
         ],

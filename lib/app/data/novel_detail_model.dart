@@ -1,3 +1,9 @@
+/*
+ * @Date: 2023-08-31 14:55:49
+ * @LastEditors: yikoyu 2282373181@qq.com
+ * @LastEditTime: 2023-09-01 10:19:46
+ * @FilePath: \esjzone\lib\app\data\novel_detail_model.dart
+ */
 class NovelDetail {
   String? category;
   String? author;
@@ -10,6 +16,7 @@ class NovelDetail {
   String? favorite;
   String? words;
   bool? isFavorite;
+  String? activeChapterId;
   List<RelatedLinkList>? relatedLinkList;
   String? description;
 
@@ -25,6 +32,7 @@ class NovelDetail {
       this.favorite,
       this.words,
       this.isFavorite,
+      this.activeChapterId,
       this.relatedLinkList,
       this.description});
 
@@ -40,6 +48,7 @@ class NovelDetail {
     favorite = json['favorite'];
     words = json['words'];
     isFavorite = json['isFavorite'];
+    activeChapterId = json['active_chapter_id'];
     if (json['relatedLinkList'] != null) {
       relatedLinkList = <RelatedLinkList>[];
       json['relatedLinkList'].forEach((v) {
@@ -62,6 +71,7 @@ class NovelDetail {
     data['favorite'] = favorite;
     data['words'] = words;
     data['isFavorite'] = isFavorite;
+    data['active_chapter_id'] = activeChapterId;
     if (relatedLinkList != null) {
       data['relatedLinkList'] =
           relatedLinkList?.map((v) => v.toJson()).toList();

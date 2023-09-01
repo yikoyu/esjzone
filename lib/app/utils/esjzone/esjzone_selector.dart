@@ -1,7 +1,7 @@
 /*
  * @Date: 2023-08-25 10:35:35
  * @LastEditors: yikoyu 2282373181@qq.com
- * @LastEditTime: 2023-08-31 10:53:07
+ * @LastEditTime: 2023-09-01 12:11:42
  * @FilePath: \esjzone\lib\app\utils\esjzone\esjzone_selector.dart
  */
 import 'package:esjzone/app/data/comment_list_model.dart';
@@ -9,6 +9,7 @@ import 'package:esjzone/app/data/novel_chapter_list_model.dart';
 import 'package:esjzone/app/data/novel_detail_model.dart';
 import 'package:esjzone/app/data/novel_detail_star_model.dart';
 import 'package:esjzone/app/data/novel_list_model.dart';
+import 'package:esjzone/app/data/novel_read_model.dart';
 import 'package:html/dom.dart';
 import 'package:html/parser.dart';
 import 'package:string_validator/string_validator.dart';
@@ -173,7 +174,11 @@ class EsjzoneSelector {
           q('div.col-md-9.book-detail button.btn-favorite > span')?.text ==
               '已收藏',
       'relatedLinkList': relatedLinkList.toList(),
-      'description': q('#details .description')?.innerHtml
+      'description': q('#details .description')?.innerHtml,
+      'active_chapter_id': _EsjzoneSelectorUtils.getChapterId(
+          q('.row .tab-content #chapterList a > p.active')
+              ?.parent
+              ?.attributes['href'])
     });
   }
 
@@ -250,6 +255,54 @@ class EsjzoneSelector {
 
     return chapterList.toList();
   }
+
+  /// 获取小说章节内容（阅读页）
+  static NovelRead novelRead(String? input) {
+    if (input == null || input.isEmpty) {
+      return NovelRead();
+    }
+
+    var q = parse(input).querySelector;
+
+    var authorEl = q('.single-post-meta:not(.file-text) > .column > a');
+    var chapterPrevEl =
+        q('.entry-navigation > div.column.text-left > .btn-prev');
+    var chapterNextEl =
+        q('.entry-navigation > div.column.text-right > .btn-next');
+
+    String? chapterId =
+        q('.form-group > input[name="forum_id"]')?.attributes['value'];
+    String? novelName = q('ul.breadcrumbs > li:last-child > a')?.text;
+    String? chapterName = q('.row  h2')?.text;
+    String? contentHtml = q('.forum-content')?.outerHtml;
+    String? updateTime =
+        q('.single-post-meta:not(.file-text) > .column:last-child')
+            ?.text
+            .trim();
+    String? words = q('.single-post-meta.file-text span#file-text')?.text;
+
+    return NovelRead.fromJson({
+      'novel_id': q('.sp-buttons > a[data-code]')?.attributes['data-code'],
+      'novel_name': novelName,
+      'likes': q('.sp-buttons > a[data-code] > #likes')?.text,
+      'is_like':
+          q('.sp-buttons > a[data-code]')?.className.contains('btn-warning') ??
+              false,
+      'chapter_id': chapterId,
+      'chapter_name': chapterName,
+      'chapter_prev_id':
+          _EsjzoneSelectorUtils.getChapterId(chapterPrevEl?.attributes['href']),
+      'chapter_prev_name': chapterPrevEl?.attributes['data-title'],
+      'chapter_next_id':
+          _EsjzoneSelectorUtils.getChapterId(chapterNextEl?.attributes['href']),
+      'chapter_next_name': chapterNextEl?.attributes['data-title'],
+      'content_html': contentHtml,
+      'author_id': authorEl?.attributes['href']?.split(RegExp(r'uid='))[1],
+      'author_name': authorEl?.text,
+      'update_time': updateTime,
+      'words': words,
+    });
+  }
 }
 
 class _EsjzoneSelectorSub {
@@ -257,21 +310,43 @@ class _EsjzoneSelectorSub {
   static Map<String, String?> chapterTypeChapterItem(Element e) {
     String? href = e.attributes['href'];
 
-    List<String>? idList = href
-        ?.split(RegExp(r'/|\.'))
-        .where((e) => int.tryParse(e) != null)
-        .toList();
-
-    bool hasNovelId = isURL(href) && idList != null && idList.isNotEmpty;
-    bool hasChapterId = isURL(href) && idList != null && idList.length > 1;
-
     return {
       'type': 'chapter',
       'title': e.text,
       'title_html': e.innerHtml,
       'link': href,
-      'novel_id': hasNovelId ? idList[0] : null,
-      'chapter_id': hasChapterId ? idList[1] : null,
+      'novel_id': _EsjzoneSelectorUtils.getNovelId(href),
+      'chapter_id': _EsjzoneSelectorUtils.getChapterId(href),
     };
+  }
+}
+
+class _EsjzoneSelectorUtils {
+  /// 解析小说URL
+  static List<String> parseChapterURL(String? url) {
+    if (!isURL(url)) return [];
+
+    if (url != null && url.isNotEmpty) {
+      return url
+          .split(RegExp(r'/|\.'))
+          .where((e) => int.tryParse(e) != null)
+          .toList();
+    }
+
+    return [];
+  }
+
+  /// 获取小说ID
+  static String? getNovelId(String? url) {
+    List<String> idList = parseChapterURL(url);
+
+    return idList.isNotEmpty ? idList[0] : null;
+  }
+
+  // 获取章节ID
+  static String? getChapterId(String? url) {
+    List<String> idList = parseChapterURL(url);
+
+    return idList.length > 1 ? idList[1] : null;
   }
 }

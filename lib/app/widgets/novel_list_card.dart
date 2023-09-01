@@ -1,7 +1,7 @@
 /*
  * @Date: 2023-08-18 21:34:50
  * @LastEditors: yikoyu 2282373181@qq.com
- * @LastEditTime: 2023-08-31 14:19:15
+ * @LastEditTime: 2023-08-31 17:43:10
  * @FilePath: \esjzone\lib\app\widgets\novel_list_card.dart
  */
 import 'package:esjzone/app/modules/novel_detail/controllers/novel_detail_controller.dart';

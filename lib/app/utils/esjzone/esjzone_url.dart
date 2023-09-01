@@ -1,7 +1,7 @@
 /*
  * @Date: 2023-08-25 10:42:23
  * @LastEditors: yikoyu 2282373181@qq.com
- * @LastEditTime: 2023-08-26 10:44:24
+ * @LastEditTime: 2023-08-31 16:19:51
  * @FilePath: \esjzone\lib\app\utils\esjzone\esjzone_url.dart
  */
 // ignore_for_file: non_constant_identifier_names
@@ -34,4 +34,9 @@ abstract class EsjzoneUrl {
 
   /// 小说详情页
   static String GET_NOVEL_DETAIL({required String id}) => '/detail/$id.html';
+
+  /// 小说阅读页
+  static String GET_NOVEL_READ(
+          {required String novelId, required String chapterId}) =>
+      '/forum/$novelId/$chapterId.html';
 }

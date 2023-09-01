@@ -1,17 +1,17 @@
 /*
  * @Date: 2023-08-26 10:37:13
  * @LastEditors: yikoyu 2282373181@qq.com
- * @LastEditTime: 2023-08-30 22:34:27
+ * @LastEditTime: 2023-09-01 20:06:52
  * @FilePath: \esjzone\lib\app\modules\novel_detail\views\novel_detail_view.dart
  */
 import 'dart:ui';
 
-import 'package:esjzone/app/data/novel_chapter_list_model.dart';
 import 'package:esjzone/app/data/novel_detail_model.dart';
 import 'package:esjzone/app/data/novel_detail_star_model.dart';
 import 'package:esjzone/app/modules/novel_detail/widgets/rating_detail_panel.dart';
 import 'package:esjzone/app/widgets/cached_image.dart';
 import 'package:esjzone/app/widgets/link_text.dart';
+import 'package:esjzone/app/widgets/novel/novel_chapters_list.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
@@ -19,7 +19,6 @@ import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
 import 'package:get/get.dart';
 
 import '../controllers/novel_detail_controller.dart';
-import '../widgets/details_chapters_panel.dart';
 
 class NovelDetailView extends GetView<NovelDetailController> {
   const NovelDetailView({Key? key, this.uniqueTag}) : super(key: key);
@@ -56,7 +55,12 @@ class NovelDetailView extends GetView<NovelDetailController> {
                   child: _buildDetail(controller.detail.value),
                 ))),
             const SliverToBoxAdapter(child: Divider()),
-            Obx(() => _buildChapterList(controller.chapterList))
+            Obx(() => NovelChaptersList(
+                  activeChapterId: controller.detail.value.activeChapterId,
+                  chapterList: controller.chapterList,
+                  onTap: ({novelId, chapterId}) =>
+                      controller.toNovelRead(novelId, chapterId),
+                ))
           ])
         ],
       ),
@@ -191,63 +195,5 @@ class NovelDetailView extends GetView<NovelDetailController> {
             alignment: WrapAlignment.start,
             children: tagsList.toList())
         .paddingSymmetric(vertical: 12);
-  }
-
-  /// 章节列表
-  Widget _buildChapterList(List<NovelChapterList> chapterList) {
-    return SliverList.builder(
-        itemCount: chapterList.length,
-        itemBuilder: ((context, index) => _buildItem(chapterList[index])));
-  }
-
-  /// 章节列表项
-  Widget _buildItem(NovelChapterList item) {
-    // 普通文本
-    if (item.type == 'text') {
-      return HtmlWidget(
-        item.titleHtml ?? '',
-        textStyle: const TextStyle(fontSize: 14),
-      ).paddingAll(8);
-    }
-
-    // 章节
-    if (item.type == 'chapter') {
-      return Card(
-          shape: const RoundedRectangleBorder(
-            borderRadius: BorderRadius.all(Radius.circular(4)),
-          ),
-          child: HtmlWidget(
-            item.titleHtml ?? '',
-            textStyle: const TextStyle(fontSize: 14),
-          ).paddingAll(8));
-    }
-
-    // 折叠列表
-    if (item.type == 'details') {
-      return DetailsChaptersPanel(
-        titleBuilder: (context) {
-          return HtmlWidget(
-            '${item.titleHtml}',
-            textStyle: const TextStyle(fontSize: 14),
-          ).paddingAll(8);
-        },
-        contentBuilder: (context) {
-          if (item.chapters != null) {
-            return ListView.builder(
-                padding: const EdgeInsets.only(top: 0),
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                itemCount: item.chapters!.length,
-                itemBuilder: ((context, index) {
-                  return _buildItem(item.chapters![index]);
-                }));
-          }
-
-          return const SizedBox();
-        },
-      );
-    }
-
-    return const SizedBox();
   }
 }
