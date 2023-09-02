@@ -1,7 +1,7 @@
 /*
  * @Date: 2023-08-26 10:37:13
  * @LastEditors: yikoyu 2282373181@qq.com
- * @LastEditTime: 2023-09-01 20:06:52
+ * @LastEditTime: 2023-09-02 20:03:55
  * @FilePath: \esjzone\lib\app\modules\novel_detail\views\novel_detail_view.dart
  */
 import 'dart:ui';
@@ -11,9 +11,9 @@ import 'package:esjzone/app/data/novel_detail_star_model.dart';
 import 'package:esjzone/app/modules/novel_detail/widgets/rating_detail_panel.dart';
 import 'package:esjzone/app/widgets/cached_image.dart';
 import 'package:esjzone/app/widgets/link_text.dart';
+import 'package:esjzone/app/widgets/load_view.dart';
 import 'package:esjzone/app/widgets/novel/novel_chapters_list.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
 
 import 'package:get/get.dart';
@@ -30,40 +30,44 @@ class NovelDetailView extends GetView<NovelDetailController> {
 
   @override
   Widget build(BuildContext context) {
-    Get.put(NovelDetailController(), tag: uniqueTag);
-
-    debugPaintSizeEnabled = false;
+    Get.put(NovelDetailController(), tag: tag);
 
     return Scaffold(
-      body: Stack(
-        fit: StackFit.expand,
-        children: [
-          // 背景图
-          ClipRRect(
-            child: ImageFiltered(
-              imageFilter: ImageFilter.blur(sigmaX: 30, sigmaY: 30),
-              child: Obx(() =>
-                  CachedImage(controller.detail.value.img, showLoading: false)),
-            ),
-          ),
-          // 内容
-          CustomScrollView(slivers: [
-            const SliverAppBar(pinned: true, forceMaterialTransparency: true),
-            Obx(() => SliverPadding(
-                padding: const EdgeInsets.all(6),
-                sliver: SliverToBoxAdapter(
-                  child: _buildDetail(controller.detail.value),
-                ))),
-            const SliverToBoxAdapter(child: Divider()),
-            Obx(() => NovelChaptersList(
-                  activeChapterId: controller.detail.value.activeChapterId,
-                  chapterList: controller.chapterList,
-                  onTap: ({novelId, chapterId}) =>
-                      controller.toNovelRead(novelId, chapterId),
-                ))
-          ])
-        ],
-      ),
+      body: LoadingView(
+          controller: controller.loadingViewController,
+          onEmptyTap: controller.onLoad,
+          onErrorTap: controller.onLoad,
+          onNetworkBlockedTap: controller.onLoad,
+          child: Stack(
+            fit: StackFit.expand,
+            children: [
+              // 背景图
+              ClipRRect(
+                child: ImageFiltered(
+                  imageFilter: ImageFilter.blur(sigmaX: 30, sigmaY: 30),
+                  child: Obx(() => CachedImage(controller.detail.value.img,
+                      showLoading: false)),
+                ),
+              ),
+              // 内容
+              CustomScrollView(slivers: [
+                const SliverAppBar(
+                    pinned: true, forceMaterialTransparency: true),
+                Obx(() => SliverPadding(
+                    padding: const EdgeInsets.all(6),
+                    sliver: SliverToBoxAdapter(
+                      child: _buildDetail(controller.detail.value),
+                    ))),
+                const SliverToBoxAdapter(child: Divider()),
+                Obx(() => NovelChaptersList(
+                      activeChapterId: controller.detail.value.activeChapterId,
+                      chapterList: controller.chapterList,
+                      onTap: ({novelId, chapterId}) =>
+                          controller.toNovelRead(novelId, chapterId),
+                    ))
+              ])
+            ],
+          )),
     );
   }
 

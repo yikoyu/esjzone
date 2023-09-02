@@ -1,11 +1,11 @@
 /*
  * @Date: 2023-08-31 17:24:47
  * @LastEditors: yikoyu 2282373181@qq.com
- * @LastEditTime: 2023-09-01 13:52:47
+ * @LastEditTime: 2023-09-02 20:04:44
  * @FilePath: \esjzone\lib\app\modules\novel_read\views\novel_read_view.dart
  */
+import 'package:esjzone/app/widgets/load_view.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
 
 import 'package:get/get.dart';
@@ -22,91 +22,99 @@ class NovelReadView extends GetView<NovelReadController> {
 
   @override
   Widget build(BuildContext context) {
+    Get.put(NovelReadController(), tag: tag);
+
     return Scaffold(
-      body: CustomScrollView(
-        controller: controller.scrollController,
-        slivers: [
-          SliverAppBar(
-            title: Obx(() => Text(
-                  controller.readDetail.value.novelName ?? '',
-                  style: const TextStyle(fontSize: 12),
-                )),
-            floating: true,
-            toolbarHeight: 40,
-            centerTitle: true,
-            actions: [
-              InkWell(
-                onTap: () {},
-                child: const Icon(Icons.list),
-              ).paddingOnly(right: 12)
-            ],
-          ),
-          SliverToBoxAdapter(
-              child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Container(
-                padding: const EdgeInsets.fromLTRB(6, 12, 6, 6),
-                child: Obx(() => Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          children: [
-                            const Icon(Icons.edit_note).paddingOnly(right: 6),
-                            RichText(
-                                text: TextSpan(children: [
-                              TextSpan(
-                                  text: 'by ',
-                                  style: TextStyle(
-                                      color: Get.isDarkMode
-                                          ? Colors.white
-                                          : Colors.black)),
-                              TextSpan(
-                                  text:
-                                      controller.readDetail.value.authorName ??
-                                          '',
-                                  style: TextStyle(
-                                      color: Theme.of(context)
-                                          .colorScheme
-                                          .primary)),
-                            ]))
-                          ],
-                        ),
-                        Row(
-                          children: [
-                            const Icon(Icons.update).paddingOnly(right: 6),
-                            Text(controller.readDetail.value.updateTime ?? '')
-                          ],
-                        ).paddingOnly(top: 6),
-                        Row(
-                          children: [
-                            const Icon(Icons.abc_outlined)
-                                .paddingOnly(right: 6),
-                            Text(controller.readDetail.value.words ?? '')
-                          ],
-                        ).paddingOnly(top: 6),
-                        Text(
-                          controller.readDetail.value.chapterName ?? '',
-                          style: const TextStyle(
-                              fontSize: 18, fontWeight: FontWeight.w500),
-                        ).paddingOnly(top: 6)
-                      ],
-                    )),
-              ),
-              const Divider(),
-              Obx(() => _buildBtnPanel()),
-              const Divider(),
-              Container(
-                padding: const EdgeInsets.all(6),
-                child: Obx(() =>
-                    HtmlWidget(controller.readDetail.value.contentHtml ?? '')),
-              ),
-              const Divider(),
-              Obx(() => _buildBtnPanel().paddingOnly(bottom: 48))
-            ],
-          ))
-        ],
-      ),
+      body: LoadingView(
+          controller: controller.loadingViewController,
+          onEmptyTap: controller.onLoad,
+          onErrorTap: controller.onLoad,
+          onNetworkBlockedTap: controller.onLoad,
+          child: _build(context)),
+    );
+  }
+
+  Widget _build(BuildContext context) {
+    return CustomScrollView(
+      controller: controller.scrollController,
+      slivers: [
+        SliverAppBar(
+          title: Obx(() => Text(
+                controller.readDetail.value.novelName ?? '',
+                style: const TextStyle(fontSize: 12),
+              )),
+          floating: true,
+          toolbarHeight: 40,
+          centerTitle: true,
+          actions: [
+            InkWell(
+              onTap: () {},
+              child: const Icon(Icons.list),
+            ).paddingOnly(right: 12)
+          ],
+        ),
+        SliverToBoxAdapter(
+            child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Container(
+              padding: const EdgeInsets.fromLTRB(6, 12, 6, 6),
+              child: Obx(() => Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          const Icon(Icons.edit_note).paddingOnly(right: 6),
+                          RichText(
+                              text: TextSpan(children: [
+                            TextSpan(
+                                text: 'by ',
+                                style: TextStyle(
+                                    color: Get.isDarkMode
+                                        ? Colors.white
+                                        : Colors.black)),
+                            TextSpan(
+                                text: controller.readDetail.value.authorName ??
+                                    '',
+                                style: TextStyle(
+                                    color:
+                                        Theme.of(context).colorScheme.primary)),
+                          ]))
+                        ],
+                      ),
+                      Row(
+                        children: [
+                          const Icon(Icons.update).paddingOnly(right: 6),
+                          Text(controller.readDetail.value.updateTime ?? '')
+                        ],
+                      ).paddingOnly(top: 6),
+                      Row(
+                        children: [
+                          const Icon(Icons.abc_outlined).paddingOnly(right: 6),
+                          Text(controller.readDetail.value.words ?? '')
+                        ],
+                      ).paddingOnly(top: 6),
+                      Text(
+                        controller.readDetail.value.chapterName ?? '',
+                        style: const TextStyle(
+                            fontSize: 18, fontWeight: FontWeight.w500),
+                      ).paddingOnly(top: 6)
+                    ],
+                  )),
+            ),
+            const Divider(),
+            Obx(() => _buildBtnPanel()),
+            const Divider(),
+            Container(
+              padding: const EdgeInsets.all(6),
+              child: Obx(() =>
+                  HtmlWidget(controller.readDetail.value.contentHtml ?? '')),
+            ),
+            const Divider(),
+            Obx(() => _buildBtnPanel().paddingOnly(bottom: 48))
+          ],
+        ))
+      ],
     );
   }
 

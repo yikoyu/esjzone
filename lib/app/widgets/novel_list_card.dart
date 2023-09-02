@@ -1,10 +1,9 @@
 /*
  * @Date: 2023-08-18 21:34:50
  * @LastEditors: yikoyu 2282373181@qq.com
- * @LastEditTime: 2023-08-31 17:43:10
+ * @LastEditTime: 2023-09-02 18:35:30
  * @FilePath: \esjzone\lib\app\widgets\novel_list_card.dart
  */
-import 'package:esjzone/app/modules/novel_detail/controllers/novel_detail_controller.dart';
 import 'package:esjzone/app/modules/novel_detail/views/novel_detail_view.dart';
 import 'package:esjzone/app/modules/search_novels/views/search_novels_view.dart';
 import 'package:flutter/material.dart';
@@ -13,7 +12,6 @@ import 'package:esjzone/app/widgets/cached_image.dart';
 import 'package:esjzone/app/widgets/icon_text.dart';
 import 'package:esjzone/app/widgets/link_text.dart';
 import 'package:esjzone/app/widgets/option_grid_view.dart';
-import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 import 'package:get/get.dart';
 import 'package:styled_widget/styled_widget.dart';
@@ -104,22 +102,8 @@ class NovelListCard extends StatelessWidget {
     // item.id = '1660575572';
     // item.id = '1600468706'; // 章节链接错误案例
 
-    EasyLoading.show(status: '加载中...', maskType: EasyLoadingMaskType.black);
-
-    NovelDetailController novelDetail =
-        Get.put(NovelDetailController(), tag: item.id);
-
-    try {
-      await novelDetail.getNovelDetailData(item.id!);
-      await EasyLoading.dismiss();
-
-      await Get.to(() => NovelDetailView(uniqueTag: item.id),
-          transition: Transition.rightToLeft);
-      Get.delete<NovelDetailController>(tag: item.id);
-    } catch (e) {
-      EasyLoading.dismiss();
-      Get.delete<NovelDetailController>(tag: item.id);
-    }
+    Get.to(() => NovelDetailView(uniqueTag: item.id),
+        arguments: {'novelId': item.id}, transition: Transition.rightToLeft);
   }
 
   void _toSearchAuthor(String? author) {

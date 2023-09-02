@@ -26,7 +26,6 @@ dependencies:
     sdk: flutter
   get_storage: ^2.1.1
   flutter_widget_from_html: ^0.10.4
-  flutter_easyloading: ^3.0.5
   flutter_rating_bar: ^4.0.1
   url_launcher: ^6.1.12
 
