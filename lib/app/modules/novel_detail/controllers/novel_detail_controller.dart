@@ -1,7 +1,7 @@
 /*
  * @Date: 2023-08-26 10:37:13
  * @LastEditors: yikoyu 2282373181@qq.com
- * @LastEditTime: 2023-09-02 19:45:14
+ * @LastEditTime: 2023-09-02 21:07:22
  * @FilePath: \esjzone\lib\app\modules\novel_detail\controllers\novel_detail_controller.dart
  */
 import 'package:dio/dio.dart';
@@ -63,7 +63,7 @@ class NovelDetailController extends GetxController {
     launchUrl(Uri.parse(url));
   }
 
-  void toNovelRead(String? novelId, String? chapterId) {
+  Future<void> toNovelRead(String? novelId, String? chapterId) async {
     bool canToNovelRead = novelId != null &&
         novelId.isNotEmpty &&
         chapterId != null &&
@@ -77,10 +77,15 @@ class NovelDetailController extends GetxController {
       return;
     }
 
+    updateDetail(chapterId);
     final String tag = '$novelId-$chapterId';
-    Get.to(() => NovelReadView(uniqueTag: tag),
+    await Get.to(() => NovelReadView(uniqueTag: tag),
         arguments: {'novelId': novelId, 'chapterId': chapterId},
         transition: Transition.rightToLeft);
+  }
+
+  void updateDetail(String chapterId) {
+    detail.update((val) => val?.activeChapterId = chapterId);
   }
 
   Future<void> getNovelDetailData(String id) async {

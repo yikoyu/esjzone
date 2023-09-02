@@ -1,17 +1,21 @@
 /*
  * @Date: 2023-08-31 17:24:47
  * @LastEditors: yikoyu 2282373181@qq.com
- * @LastEditTime: 2023-09-02 19:45:01
+ * @LastEditTime: 2023-09-02 21:23:02
  * @FilePath: \esjzone\lib\app\modules\novel_read\controllers\novel_read_controller.dart
  */
 import 'package:dio/dio.dart';
 import 'package:esjzone/app/data/novel_read_model.dart';
+import 'package:esjzone/app/modules/novel_detail/controllers/novel_detail_controller.dart';
 import 'package:esjzone/app/utils/esjzone/esjzone.dart';
 import 'package:esjzone/app/widgets/load_view.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class NovelReadController extends GetxController {
+  final NovelDetailController detail =
+      Get.put(NovelDetailController(), tag: Get.arguments['novelId']);
+
   var readDetail = NovelRead().obs;
   ScrollController scrollController = ScrollController();
   LoadingViewController loadingViewController = LoadingViewController();
@@ -73,8 +77,8 @@ class NovelReadController extends GetxController {
       return;
     }
 
-    scrollController.animateTo(0,
-        duration: const Duration(seconds: 1), curve: Curves.easeIn);
+    scrollController.jumpTo(0);
     await getReadDetail(novelId, chapterId);
+    detail.updateDetail(chapterId);
   }
 }

@@ -1,7 +1,7 @@
 /*
  * @Date: 2023-09-01 15:11:46
  * @LastEditors: yikoyu 2282373181@qq.com
- * @LastEditTime: 2023-09-01 20:06:32
+ * @LastEditTime: 2023-09-02 20:31:27
  * @FilePath: \esjzone\lib\app\widgets\novel\novel_chapters_list.dart
  */
 import 'package:esjzone/app/data/novel_chapter_list_model.dart';
@@ -13,6 +13,7 @@ import 'novel_details_chapters_panel.dart';
 
 class NovelChaptersList extends StatelessWidget {
   final bool showDetail;
+  final bool sliver;
   final String? activeChapterId;
   final List<NovelChapterList> chapterList;
   final void Function({String? novelId, String? chapterId})? onTap;
@@ -20,13 +21,21 @@ class NovelChaptersList extends StatelessWidget {
   const NovelChaptersList(
       {super.key,
       this.activeChapterId,
+      this.sliver = true,
       required this.chapterList,
       this.onTap,
       this.showDetail = false});
 
   @override
   Widget build(BuildContext context) {
-    return SliverList.builder(
+    if (sliver) {
+      return SliverList.builder(
+          itemCount: chapterList.length,
+          itemBuilder: ((context, index) =>
+              _buildItem(context, chapterList[index])));
+    }
+
+    return ListView.builder(
         itemCount: chapterList.length,
         itemBuilder: ((context, index) =>
             _buildItem(context, chapterList[index])));

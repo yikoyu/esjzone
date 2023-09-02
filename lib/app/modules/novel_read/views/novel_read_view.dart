@@ -1,10 +1,12 @@
 /*
  * @Date: 2023-08-31 17:24:47
  * @LastEditors: yikoyu 2282373181@qq.com
- * @LastEditTime: 2023-09-02 20:04:44
+ * @LastEditTime: 2023-09-02 21:25:25
  * @FilePath: \esjzone\lib\app\modules\novel_read\views\novel_read_view.dart
  */
+import 'package:esjzone/app/modules/novel_detail/controllers/novel_detail_controller.dart';
 import 'package:esjzone/app/widgets/load_view.dart';
+import 'package:esjzone/app/widgets/novel/novel_chapters_list.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
 
@@ -25,6 +27,7 @@ class NovelReadView extends GetView<NovelReadController> {
     Get.put(NovelReadController(), tag: tag);
 
     return Scaffold(
+      endDrawer: _buildEndDrawer(),
       body: LoadingView(
           controller: controller.loadingViewController,
           onEmptyTap: controller.onLoad,
@@ -32,6 +35,36 @@ class NovelReadView extends GetView<NovelReadController> {
           onNetworkBlockedTap: controller.onLoad,
           child: _build(context)),
     );
+  }
+
+  Widget _buildEndDrawer() {
+    return Builder(
+        builder: ((BuildContext context) => Drawer(
+              backgroundColor: Get.isDarkMode ? null : Colors.white,
+              width: 306,
+              child: SafeArea(
+                  child: Column(
+                children: [
+                  Text(
+                    controller.readDetail.value.novelName ?? '',
+                    style: const TextStyle(
+                        fontSize: 16, fontWeight: FontWeight.bold),
+                  ).paddingAll(6),
+                  Expanded(
+                      child: NovelChaptersList(
+                          sliver: false,
+                          showDetail: true,
+                          activeChapterId:
+                              controller.detail.detail.value.activeChapterId,
+                          onTap: ({novelId, chapterId}) {
+                            Scaffold.of(context).closeEndDrawer();
+                            controller.toChapter(
+                                novelId: novelId, chapterId: chapterId);
+                          },
+                          chapterList: controller.detail.chapterList))
+                ],
+              )),
+            )));
   }
 
   Widget _build(BuildContext context) {
@@ -46,12 +79,6 @@ class NovelReadView extends GetView<NovelReadController> {
           floating: true,
           toolbarHeight: 40,
           centerTitle: true,
-          actions: [
-            InkWell(
-              onTap: () {},
-              child: const Icon(Icons.list),
-            ).paddingOnly(right: 12)
-          ],
         ),
         SliverToBoxAdapter(
             child: Column(
@@ -135,11 +162,11 @@ class NovelReadView extends GetView<NovelReadController> {
                         chapterId: controller.readDetail.value.chapterPrevId),
                     icon: const Icon(Icons.arrow_back),
                     label: const Text('上一章'))),
-            IconButton(
-              onPressed: () {},
-              icon: const Icon(Icons.list),
-              style: const ButtonStyle(elevation: MaterialStatePropertyAll(12)),
-            ),
+            // IconButton(
+            //   onPressed: () {},
+            //   icon: const Icon(Icons.list),
+            //   style: const ButtonStyle(elevation: MaterialStatePropertyAll(12)),
+            // ),
             Visibility(
                 visible: controller.readDetail.value.chapterNextId != null,
                 maintainState: true,
