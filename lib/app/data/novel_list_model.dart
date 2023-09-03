@@ -1,7 +1,7 @@
 /*
  * @Date: 2023-08-15 14:38:07
  * @LastEditors: yikoyu 2282373181@qq.com
- * @LastEditTime: 2023-08-29 10:21:12
+ * @LastEditTime: 2023-09-03 16:51:08
  * @FilePath: \esjzone\lib\app\data\novel_list_model.dart
  */
 class NovelList {
@@ -12,6 +12,7 @@ class NovelList {
   String? author;
   String? lastEp;
   String? lastEpLink;
+  String? lastChapterId;
   String? stars;
   String? words;
   String? views;
@@ -28,6 +29,7 @@ class NovelList {
       this.author,
       this.lastEp,
       this.lastEpLink,
+      this.lastChapterId,
       this.stars,
       this.words,
       this.views,
@@ -44,6 +46,7 @@ class NovelList {
     author = json['author'];
     lastEp = json['last_ep'];
     lastEpLink = json['last_ep_link'];
+    lastChapterId = json['last_chapter_id'];
     stars = json['stars'];
     words = json['words'];
     views = json['views'];
@@ -62,6 +65,7 @@ class NovelList {
     data['author'] = author;
     data['last_ep'] = lastEp;
     data['last_ep_link'] = lastEpLink;
+    data['last_chapter_id'] = lastChapterId;
     data['stars'] = stars;
     data['words'] = words;
     data['views'] = views;

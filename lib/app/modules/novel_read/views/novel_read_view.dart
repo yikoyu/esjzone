@@ -1,10 +1,9 @@
 /*
  * @Date: 2023-08-31 17:24:47
  * @LastEditors: yikoyu 2282373181@qq.com
- * @LastEditTime: 2023-09-02 21:25:25
+ * @LastEditTime: 2023-09-03 16:58:01
  * @FilePath: \esjzone\lib\app\modules\novel_read\views\novel_read_view.dart
  */
-import 'package:esjzone/app/modules/novel_detail/controllers/novel_detail_controller.dart';
 import 'package:esjzone/app/widgets/load_view.dart';
 import 'package:esjzone/app/widgets/novel/novel_chapters_list.dart';
 import 'package:flutter/material.dart';
@@ -40,7 +39,7 @@ class NovelReadView extends GetView<NovelReadController> {
   Widget _buildEndDrawer() {
     return Builder(
         builder: ((BuildContext context) => Drawer(
-              backgroundColor: Get.isDarkMode ? null : Colors.white,
+              backgroundColor: Get.isDarkMode ? Colors.black : Colors.white,
               width: 306,
               child: SafeArea(
                   child: Column(

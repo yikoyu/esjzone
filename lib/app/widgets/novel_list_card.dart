@@ -1,10 +1,11 @@
 /*
  * @Date: 2023-08-18 21:34:50
  * @LastEditors: yikoyu 2282373181@qq.com
- * @LastEditTime: 2023-09-02 18:35:30
+ * @LastEditTime: 2023-09-03 16:55:15
  * @FilePath: \esjzone\lib\app\widgets\novel_list_card.dart
  */
 import 'package:esjzone/app/modules/novel_detail/views/novel_detail_view.dart';
+import 'package:esjzone/app/modules/novel_read/views/novel_read_view.dart';
 import 'package:esjzone/app/modules/search_novels/views/search_novels_view.dart';
 import 'package:flutter/material.dart';
 import 'package:esjzone/app/data/novel_list_model.dart';
@@ -81,7 +82,8 @@ class NovelListCard extends StatelessWidget {
       title,
       LinkText(item.author, onTap: () => _toSearchAuthor(item.author))
           .padding(bottom: 4),
-      LinkText(item.lastEp, onTap: () => debugPrint('跳转章节页'))
+      LinkText(item.lastEp,
+              onTap: () => _toNovelChapter(item.id, item.lastChapterId))
           .padding(bottom: 4),
       OptionGridView(
           itemCount: iconTextList.length,
@@ -110,6 +112,18 @@ class NovelListCard extends StatelessWidget {
     if (item.author != null && item.author!.isNotEmpty) {
       Get.to(() => SearchNovelsView(uniqueTag: item.author),
           arguments: {'search': item.author}, transition: Transition.fadeIn);
+    }
+  }
+
+  void _toNovelChapter(String? novelId, String? chapterId) {
+    if (novelId != null &&
+        novelId.isNotEmpty &&
+        chapterId != null &&
+        chapterId.isNotEmpty) {
+      final String tag = '$novelId-$chapterId';
+      Get.to(() => NovelReadView(uniqueTag: tag),
+          arguments: {'novelId': novelId, 'chapterId': chapterId},
+          transition: Transition.rightToLeft);
     }
   }
 }

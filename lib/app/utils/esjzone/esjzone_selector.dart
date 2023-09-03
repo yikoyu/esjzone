@@ -1,7 +1,7 @@
 /*
  * @Date: 2023-08-25 10:35:35
  * @LastEditors: yikoyu 2282373181@qq.com
- * @LastEditTime: 2023-09-01 12:11:42
+ * @LastEditTime: 2023-09-03 16:49:17
  * @FilePath: \esjzone\lib\app\utils\esjzone\esjzone_selector.dart
  */
 import 'package:esjzone/app/data/comment_list_model.dart';
@@ -66,6 +66,8 @@ class EsjzoneSelector {
         'author': q('> .card-author > a')?.text,
         'last_ep': q('> .card-ep > a')?.text,
         'last_ep_link': q('> .card-ep > a')?.attributes['href'],
+        'last_chapter_id': _EsjzoneSelectorUtils.getChapterId(
+            q('> .card-ep > a')?.attributes['href']),
         'stars': q('> i.icon-star-s')?.parent?.text.trim(),
         'words': q('> i.icon-file-text')?.parent?.text.trim(),
         'views': q('> i.icon-eye')?.parent?.text.trim(),
