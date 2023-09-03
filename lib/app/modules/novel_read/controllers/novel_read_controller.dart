@@ -1,7 +1,7 @@
 /*
  * @Date: 2023-08-31 17:24:47
  * @LastEditors: yikoyu 2282373181@qq.com
- * @LastEditTime: 2023-09-02 21:23:02
+ * @LastEditTime: 2023-09-03 17:29:57
  * @FilePath: \esjzone\lib\app\modules\novel_read\controllers\novel_read_controller.dart
  */
 import 'package:dio/dio.dart';
@@ -10,11 +10,14 @@ import 'package:esjzone/app/modules/novel_detail/controllers/novel_detail_contro
 import 'package:esjzone/app/utils/esjzone/esjzone.dart';
 import 'package:esjzone/app/widgets/load_view.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
 
 class NovelReadController extends GetxController {
   final NovelDetailController detail =
       Get.put(NovelDetailController(), tag: Get.arguments['novelId']);
+  late final String novelId;
+  late final String chapterId;
 
   var readDetail = NovelRead().obs;
   ScrollController scrollController = ScrollController();
@@ -80,5 +83,38 @@ class NovelReadController extends GetxController {
     scrollController.jumpTo(0);
     await getReadDetail(novelId, chapterId);
     detail.updateDetail(chapterId);
+  }
+
+  Future<void> onHandleLike() async {
+    EasyLoading.show(status: '加载中...');
+
+    try {
+      String? likes = await EsjzoneHttp.forumLikes(
+          readDetail.value.novelId!, readDetail.value.chapterId!);
+      EasyLoading.dismiss();
+
+      if (likes != null && likes.isNotEmpty) {
+        readDetail.update((val) {
+          val?.isLike = !(val.isLike ?? false);
+          val?.likes = likes;
+        });
+      }
+
+      Get.snackbar(
+          '提示', (readDetail.value.isLike ?? false) ? '点赞成功' : '取消点赞成功');
+    } on DioException catch (e) {
+      EasyLoading.dismiss();
+      Get.closeAllSnackbars();
+      if (e.type == DioExceptionType.connectionTimeout ||
+          e.type == DioExceptionType.unknown) {
+        Get.snackbar('点赞失败', '网络连接超时，请检查你的网络环境',
+            backgroundColor: Colors.red.shade200);
+      } else {
+        Get.snackbar('点赞失败', '点赞失败，请稍后再试',
+            backgroundColor: Colors.red.shade200);
+      }
+    } catch (e) {
+      EasyLoading.dismiss();
+    }
   }
 }

@@ -1,7 +1,7 @@
 /*
  * @Date: 2023-08-31 17:24:47
  * @LastEditors: yikoyu 2282373181@qq.com
- * @LastEditTime: 2023-09-03 16:58:01
+ * @LastEditTime: 2023-09-03 17:32:11
  * @FilePath: \esjzone\lib\app\modules\novel_read\views\novel_read_view.dart
  */
 import 'package:esjzone/app/widgets/load_view.dart';
@@ -26,6 +26,7 @@ class NovelReadView extends GetView<NovelReadController> {
     Get.put(NovelReadController(), tag: tag);
 
     return Scaffold(
+      drawerEdgeDragWidth: 150,
       endDrawer: _buildEndDrawer(),
       body: LoadingView(
           controller: controller.loadingViewController,
@@ -72,7 +73,7 @@ class NovelReadView extends GetView<NovelReadController> {
       slivers: [
         SliverAppBar(
           title: Obx(() => Text(
-                controller.readDetail.value.novelName ?? '',
+                controller.readDetail.value.chapterName ?? '',
                 style: const TextStyle(fontSize: 12),
               )),
           floating: true,
@@ -136,12 +137,24 @@ class NovelReadView extends GetView<NovelReadController> {
               child: Obx(() =>
                   HtmlWidget(controller.readDetail.value.contentHtml ?? '')),
             ),
+            _buildLikeBtn(),
             const Divider(),
             Obx(() => _buildBtnPanel().paddingOnly(bottom: 48))
           ],
         ))
       ],
     );
+  }
+
+  Widget _buildLikeBtn() {
+    return Container(
+        padding: const EdgeInsets.all(6),
+        child: Obx(() => TextButton.icon(
+            onPressed: controller.onHandleLike,
+            icon: (controller.readDetail.value.isLike ?? false)
+                ? const Icon(Icons.thumb_up_alt)
+                : const Icon(Icons.thumb_up_alt_outlined),
+            label: Text(controller.readDetail.value.likes ?? '0'))));
   }
 
   Widget _buildBtnPanel() {

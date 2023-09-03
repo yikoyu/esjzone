@@ -1,7 +1,7 @@
 /*
  * @Date: 2023-08-25 10:40:24
  * @LastEditors: yikoyu 2282373181@qq.com
- * @LastEditTime: 2023-09-03 15:55:24
+ * @LastEditTime: 2023-09-03 17:22:11
  * @FilePath: \esjzone\lib\app\utils\esjzone\esjzone_http.dart
  */
 import 'dart:convert';
@@ -134,5 +134,34 @@ class EsjzoneHttp {
     }
 
     return '${jsonData['favorite']}';
+  }
+
+  // 小说点赞
+  static Future<String?> forumLikes(String novelId, String chapterId) async {
+    // 获取授权
+    String? authCode = await _getActionAuth(
+        EsjzoneUrl.GET_NOVEL_READ(novelId: novelId, chapterId: novelId),
+        errorTitle: '点赞失败');
+    if (authCode.isEmpty) return null;
+
+    // 收藏
+    dynamic data =
+        await HttpUtils.post(EsjzoneUrl.POST_FORUM_LIKES, form: true, data: {
+      'code': novelId,
+      'id': chapterId,
+    }, headers: {
+      'authorization': authCode
+    });
+    dynamic jsonData = jsonDecode(data.toString());
+
+    if (jsonData['status'] != 200) {
+      Get
+        ..closeAllSnackbars()
+        ..snackbar('点赞失败', '请稍后重试', backgroundColor: Colors.red.shade200);
+
+      return null;
+    }
+
+    return '${jsonData['likes']}';
   }
 }

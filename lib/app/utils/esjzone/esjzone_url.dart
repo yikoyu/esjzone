@@ -1,7 +1,7 @@
 /*
  * @Date: 2023-08-25 10:42:23
  * @LastEditors: yikoyu 2282373181@qq.com
- * @LastEditTime: 2023-09-03 15:20:00
+ * @LastEditTime: 2023-09-03 17:17:19
  * @FilePath: \esjzone\lib\app\utils\esjzone\esjzone_url.dart
  */
 // ignore_for_file: non_constant_identifier_names
@@ -42,4 +42,7 @@ abstract class EsjzoneUrl {
 
   /// 收藏
   static String POST_MEM_FAVORITE = '/inc/mem_favorite.php';
+
+  // 章节点赞
+  static String POST_FORUM_LIKES = '/inc/forum_likes.php';
 }
