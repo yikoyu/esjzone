@@ -1,10 +1,11 @@
 /*
  * @Date: 2023-08-25 10:35:35
  * @LastEditors: yikoyu 2282373181@qq.com
- * @LastEditTime: 2023-09-03 16:49:17
+ * @LastEditTime: 2023-09-03 18:54:53
  * @FilePath: \esjzone\lib\app\utils\esjzone\esjzone_selector.dart
  */
 import 'package:esjzone/app/data/comment_list_model.dart';
+import 'package:esjzone/app/data/my_favorite_list_model.dart';
 import 'package:esjzone/app/data/novel_chapter_list_model.dart';
 import 'package:esjzone/app/data/novel_detail_model.dart';
 import 'package:esjzone/app/data/novel_detail_star_model.dart';
@@ -305,6 +306,50 @@ class EsjzoneSelector {
       'words': words,
     });
   }
+
+  /// 我的收藏
+  static List<MyFavoriteList> myFavoriteList(String? input) {
+    if (input == null || input.isEmpty) {
+      return <MyFavoriteList>[];
+    }
+
+    Document doc = parse(input);
+    List<Element> favoriteListEL = doc.querySelectorAll(
+        '.table-responsive > table.table .product-item > .product-info');
+
+    Iterable<MyFavoriteList> favoriteList = favoriteListEL.map((e) {
+      var q = e.querySelector;
+
+      Element? titleEl = q('> h5.product-title > a');
+      Element? lastChapterEl = q('> .book-ep a');
+      Element? noLinkLastChapterEl = q('> .book-ep > div.mr-3');
+      Element? lastWatchEl = q('> .book-ep > div:not(.mr-3)');
+      Element? updateTimeEl = q('> .book-update');
+
+      String? novelId = _EsjzoneSelectorUtils.getNovelId(
+          titleEl?.attributes['href'],
+          checkUrl: false);
+      String? lastChapterId =
+          _EsjzoneSelectorUtils.getChapterId(lastChapterEl?.attributes['href']);
+      String? noLinkLastChapterText =
+          noLinkLastChapterEl?.text.split('最新：').toList().reversed.toList()[0];
+      String? lastWatchText =
+          lastWatchEl?.text.split('最後觀看：').toList().reversed.toList()[0];
+      String? updateTimeText =
+          updateTimeEl?.text.split('更新日期：').toList().reversed.toList()[0];
+
+      return MyFavoriteList.fromJson({
+        'novel_name': titleEl?.text,
+        'novel_id': novelId,
+        'last_chapter_id': lastChapterId,
+        'last_chapter_name': lastChapterEl?.text ?? noLinkLastChapterText,
+        'last_watch': lastWatchText,
+        'update_time': updateTimeText,
+      });
+    });
+
+    return favoriteList.toList();
+  }
 }
 
 class _EsjzoneSelectorSub {
@@ -325,8 +370,8 @@ class _EsjzoneSelectorSub {
 
 class _EsjzoneSelectorUtils {
   /// 解析小说URL
-  static List<String> parseChapterURL(String? url) {
-    if (!isURL(url)) return [];
+  static List<String> parseChapterURL(String? url, {bool checkUrl = true}) {
+    if (checkUrl && !isURL(url)) return [];
 
     if (url != null && url.isNotEmpty) {
       return url
@@ -339,15 +384,15 @@ class _EsjzoneSelectorUtils {
   }
 
   /// 获取小说ID
-  static String? getNovelId(String? url) {
-    List<String> idList = parseChapterURL(url);
+  static String? getNovelId(String? url, {bool checkUrl = true}) {
+    List<String> idList = parseChapterURL(url, checkUrl: checkUrl);
 
     return idList.isNotEmpty ? idList[0] : null;
   }
 
   // 获取章节ID
-  static String? getChapterId(String? url) {
-    List<String> idList = parseChapterURL(url);
+  static String? getChapterId(String? url, {bool checkUrl = true}) {
+    List<String> idList = parseChapterURL(url, checkUrl: checkUrl);
 
     return idList.length > 1 ? idList[1] : null;
   }

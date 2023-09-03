@@ -1,10 +1,11 @@
 /*
  * @Date: 2023-08-25 11:14:30
  * @LastEditors: yikoyu 2282373181@qq.com
- * @LastEditTime: 2023-08-31 17:20:09
+ * @LastEditTime: 2023-09-03 18:55:00
  * @FilePath: \esjzone\lib\app\utils\esjzone\esjzone_parse_data.dart
  */
 import 'package:esjzone/app/data/comment_list_model.dart';
+import 'package:esjzone/app/data/my_favorite_list_model.dart';
 import 'package:esjzone/app/data/novel_chapter_list_model.dart';
 import 'package:esjzone/app/data/novel_detail_model.dart';
 import 'package:esjzone/app/data/novel_detail_star_model.dart';
@@ -58,5 +59,11 @@ class EsjzoneParseData {
   Future<NovelRead> novelChapterReadDetail() async {
     String data = await htmlData;
     return EsjzoneSelector.novelRead(data);
+  }
+
+  /// 获取我的收藏
+  Future<List<MyFavoriteList>> myFavoriteList() async {
+    String data = await htmlData;
+    return EsjzoneSelector.myFavoriteList(data);
   }
 }

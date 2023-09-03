@@ -1,7 +1,7 @@
 /*
  * @Date: 2023-08-25 10:42:23
  * @LastEditors: yikoyu 2282373181@qq.com
- * @LastEditTime: 2023-09-03 17:17:19
+ * @LastEditTime: 2023-09-03 18:27:37
  * @FilePath: \esjzone\lib\app\utils\esjzone\esjzone_url.dart
  */
 // ignore_for_file: non_constant_identifier_names
@@ -33,6 +33,10 @@ abstract class EsjzoneUrl {
   static String GET_NOVEL_READ(
           {required String novelId, required String chapterId}) =>
       '/forum/$novelId/$chapterId.html';
+
+  /// 我的收藏
+  static String GET_MY_FAVORITE({required int page, bool isUpdate = false}) =>
+      '/my/favorite${isUpdate ? '/udate' : ''}/$page';
 
   /// 获取授权，发起 登录 需要使用
   static String POST_MY_LOGIN = '/my/login';

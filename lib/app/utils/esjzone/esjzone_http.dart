@@ -1,7 +1,7 @@
 /*
  * @Date: 2023-08-25 10:40:24
  * @LastEditors: yikoyu 2282373181@qq.com
- * @LastEditTime: 2023-09-03 17:22:11
+ * @LastEditTime: 2023-09-03 18:27:53
  * @FilePath: \esjzone\lib\app\utils\esjzone\esjzone_http.dart
  */
 import 'dart:convert';
@@ -53,6 +53,15 @@ class EsjzoneHttp {
       String novelId, String chapterId) async {
     String data = await HttpUtils.get(
         EsjzoneUrl.GET_NOVEL_READ(novelId: novelId, chapterId: chapterId));
+
+    return data;
+  }
+
+  /// 我的收藏
+  static Future<String> getMyFavoritePage(
+      {required int page, bool isUpdate = false}) async {
+    String data = await HttpUtils.get(
+        EsjzoneUrl.GET_MY_FAVORITE(page: page, isUpdate: isUpdate));
 
     return data;
   }
