@@ -1,7 +1,7 @@
 /*
  * @Date: 2023-08-25 10:40:24
  * @LastEditors: yikoyu 2282373181@qq.com
- * @LastEditTime: 2023-08-31 16:21:23
+ * @LastEditTime: 2023-09-03 15:55:24
  * @FilePath: \esjzone\lib\app\utils\esjzone\esjzone_http.dart
  */
 import 'dart:convert';
@@ -57,25 +57,34 @@ class EsjzoneHttp {
     return data;
   }
 
+  /// 获取授权
+  static Future<String> _getActionAuth(url, {String errorTitle = '提示'}) async {
+    dynamic loginData = await HttpUtils.post(url, form: true, data: {
+      'plxf': 'getAuthToken',
+    });
+
+    String authCode = EsjzoneSelector.getAuthToken(loginData);
+
+    if (authCode.isEmpty) {
+      Get
+        ..closeAllSnackbars()
+        ..snackbar(errorTitle, '授权异常，请尝试重新登录',
+            backgroundColor: Colors.red.shade200);
+
+      return '';
+    }
+
+    return authCode;
+  }
+
   /// 授权登录
   static Future<void> login(
       {required String email, required String pwd}) async {
     HttpUtils.deleteAllCookie();
     // 获取授权
-    dynamic loginData =
-        await HttpUtils.post(EsjzoneUrl.POST_MY_LOGIN, form: true, data: {
-      'plxf': 'getAuthToken',
-    });
-
-    String authorization = EsjzoneSelector.getAuthToken(loginData);
-
-    if (authorization.isEmpty) {
-      Get
-        ..closeAllSnackbars()
-        ..snackbar('登录异常', '授权异常，请重试', backgroundColor: Colors.red.shade200);
-
-      return;
-    }
+    String? authCode =
+        await _getActionAuth(EsjzoneUrl.POST_MY_LOGIN, errorTitle: '登录失败');
+    if (authCode.isEmpty) return;
 
     // 登录
     dynamic data =
@@ -84,7 +93,7 @@ class EsjzoneHttp {
       'pwd': pwd,
       'remember_me': 'on',
     }, headers: {
-      'authorization': authorization
+      'authorization': authCode
     });
     dynamic jsonData = jsonDecode(data.toString());
 
@@ -101,5 +110,29 @@ class EsjzoneHttp {
     Get
       ..closeAllSnackbars()
       ..snackbar('提示', '登录成功');
+  }
+
+  /// 小说收藏
+  static Future<String?> memFavorite(String novelId) async {
+    // 获取授权
+    String? authCode = await _getActionAuth(
+        EsjzoneUrl.GET_NOVEL_DETAIL(id: novelId),
+        errorTitle: '收藏失败');
+    if (authCode.isEmpty) return null;
+
+    // 收藏
+    dynamic data = await HttpUtils.post(EsjzoneUrl.POST_MEM_FAVORITE,
+        headers: {'authorization': authCode});
+    dynamic jsonData = jsonDecode(data.toString());
+
+    if (jsonData['status'] != 200) {
+      Get
+        ..closeAllSnackbars()
+        ..snackbar('收藏失败', '请稍后重试', backgroundColor: Colors.red.shade200);
+
+      return null;
+    }
+
+    return '${jsonData['favorite']}';
   }
 }

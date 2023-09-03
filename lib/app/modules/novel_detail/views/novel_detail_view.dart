@@ -1,7 +1,7 @@
 /*
  * @Date: 2023-08-26 10:37:13
  * @LastEditors: yikoyu 2282373181@qq.com
- * @LastEditTime: 2023-09-02 20:03:55
+ * @LastEditTime: 2023-09-03 16:42:16
  * @FilePath: \esjzone\lib\app\modules\novel_detail\views\novel_detail_view.dart
  */
 import 'dart:ui';
@@ -35,9 +35,9 @@ class NovelDetailView extends GetView<NovelDetailController> {
     return Scaffold(
       body: LoadingView(
           controller: controller.loadingViewController,
-          onEmptyTap: controller.onLoad,
-          onErrorTap: controller.onLoad,
-          onNetworkBlockedTap: controller.onLoad,
+          onEmptyTap: controller.getNovelDetailData,
+          onErrorTap: controller.getNovelDetailData,
+          onNetworkBlockedTap: controller.getNovelDetailData,
           child: Stack(
             fit: StackFit.expand,
             children: [
@@ -145,27 +145,35 @@ class NovelDetailView extends GetView<NovelDetailController> {
 
   /// 操作按钮
   Widget _buildBtnWrap() {
+    bool hasHistory = controller.detail.value.activeChapterId != null &&
+        controller.detail.value.activeChapterId!.isNotEmpty;
+
     List<ElevatedButton> btnList = [
       ElevatedButton.icon(
           style: const ButtonStyle(visualDensity: VisualDensity.compact),
-          onPressed: () {},
+          onPressed: controller.onHandleStartRead,
           icon: const Icon(Icons.menu_book_outlined),
-          label: const Text('阅读')),
+          label: hasHistory
+              ? const Text('继续阅读', style: TextStyle(fontSize: 12))
+              : const Text('阅读', style: TextStyle(fontSize: 12))),
     ];
 
     if (controller.detail.value.isFavorite != null &&
         controller.detail.value.isFavorite == true) {
       btnList.add(ElevatedButton.icon(
           style: const ButtonStyle(visualDensity: VisualDensity.compact),
-          onPressed: () {},
+          onPressed: controller.onHandleFavorite,
           icon: const Icon(Icons.favorite),
-          label: const Text('已收藏')));
+          label: const Text('已收藏', style: TextStyle(fontSize: 12))));
     } else {
       btnList.add(ElevatedButton.icon(
           style: const ButtonStyle(visualDensity: VisualDensity.compact),
-          onPressed: () {},
+          onPressed: controller.onHandleFavorite,
           icon: const Icon(Icons.favorite_outline),
-          label: const Text('收藏')));
+          label: const Text(
+            '收藏',
+            style: TextStyle(fontSize: 12),
+          )));
     }
 
     if (controller.detail.value.rawNovelLink != null) {
@@ -174,7 +182,7 @@ class NovelDetailView extends GetView<NovelDetailController> {
           onPressed: () =>
               controller.toNovelRaw(controller.detail.value.rawNovelLink!),
           icon: const Icon(Icons.raw_on),
-          label: const Text('生肉')));
+          label: const Text('生肉', style: TextStyle(fontSize: 12))));
     }
 
     return Wrap(

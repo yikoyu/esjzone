@@ -1,7 +1,7 @@
 /*
  * @Date: 2023-08-10 15:56:49
  * @LastEditors: yikoyu 2282373181@qq.com
- * @LastEditTime: 2023-08-10 15:58:35
+ * @LastEditTime: 2023-09-03 15:52:15
  * @FilePath: \esjzone\lib\app\utils\request\interceptor\request_interceptor.dart
  */
 import 'package:dio/dio.dart';
@@ -12,6 +12,7 @@ class RequestInterceptor extends Interceptor {
   void onRequest(RequestOptions options, RequestInterceptorHandler handler) {
     RequestOptions resOptions = options.copyWith(
       headers: {
+        ...options.headers,
         "Content-Type": "application/json",
         // 'Authorization': 'Bearer $accessToken',
       },
