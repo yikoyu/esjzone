@@ -1,7 +1,7 @@
 /*
  * @Date: 2023-08-15 15:11:36
  * @LastEditors: yikoyu 2282373181@qq.com
- * @LastEditTime: 2023-09-01 20:13:42
+ * @LastEditTime: 2023-09-09 23:14:29
  * @FilePath: \esjzone\lib\app\modules\novels\controllers\novels_controller.dart
  */
 import 'package:easy_refresh/easy_refresh.dart';
@@ -51,11 +51,13 @@ class NovelsController extends GetxController {
 
     List<NovelList> value = await esjzone.novelList();
     hotTagList.value = await esjzone.hotTagList();
+    int? total = await esjzone.getPagination();
 
     debugPrint('热门标签 > $hotTagList');
 
     // 列表为空，最后一页
-    if (value.isEmpty) {
+    debugPrint('pagination > $total > $page');
+    if (total != null && (page > total)) {
       easyRefreshController.finishLoad(IndicatorResult.noMore);
       return;
     }

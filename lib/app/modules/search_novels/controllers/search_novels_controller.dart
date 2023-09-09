@@ -1,13 +1,7 @@
 /*
  * @Date: 2023-08-24 10:32:36
  * @LastEditors: yikoyu 2282373181@qq.com
- * @LastEditTime: 2023-09-01 20:32:15
- * @FilePath: \esjzone\lib\app\modules\search_novels\controllers\search_novels_controller.dart
- */
-/*
- * @Date: 2023-08-22 14:47:36
- * @LastEditors: yikoyu 2282373181@qq.com
- * @LastEditTime: 2023-08-24 13:33:15
+ * @LastEditTime: 2023-09-09 23:14:05
  * @FilePath: \esjzone\lib\app\modules\search_novels\controllers\search_novels_controller.dart
  */
 import 'package:easy_refresh/easy_refresh.dart';
@@ -65,9 +59,11 @@ class SearchNovelsController extends GetxController {
             sort: sortValue));
 
     List<NovelList> value = await esjzone.novelList();
+    int? total = await esjzone.getPagination();
 
     // 列表为空，最后一页
-    if (value.isEmpty) {
+    debugPrint('pagination > $total > $page');
+    if (total != null && (page > total)) {
       easyRefreshController.finishLoad(IndicatorResult.noMore);
       return;
     }

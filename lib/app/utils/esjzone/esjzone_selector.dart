@@ -1,7 +1,7 @@
 /*
  * @Date: 2023-08-25 10:35:35
  * @LastEditors: yikoyu 2282373181@qq.com
- * @LastEditTime: 2023-09-03 18:54:53
+ * @LastEditTime: 2023-09-09 23:08:19
  * @FilePath: \esjzone\lib\app\utils\esjzone\esjzone_selector.dart
  */
 import 'package:esjzone/app/data/comment_list_model.dart';
@@ -30,6 +30,22 @@ class EsjzoneSelector {
     }
 
     return row.text;
+  }
+
+  /// 获取页数和总页数
+  static int? getPagination(String? input) {
+    if (input == null || input.isEmpty) {
+      return null;
+    }
+
+    int startIndex = input.indexOf(RegExp('total: [0-9]{1,},'));
+
+    if (startIndex == -1) return null;
+
+    String inputDoc = input.substring(startIndex);
+    int endIndex = inputDoc.indexOf(',');
+
+    return int.tryParse(inputDoc.substring(6, endIndex));
   }
 
   /// 获取小说列表（列表页、搜索页）
