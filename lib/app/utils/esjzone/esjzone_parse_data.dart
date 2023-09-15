@@ -5,6 +5,7 @@
  * @FilePath: \esjzone\lib\app\utils\esjzone\esjzone_parse_data.dart
  */
 import 'package:esjzone/app/data/comment_list_model.dart';
+import 'package:esjzone/app/data/login_user_model.dart';
 import 'package:esjzone/app/data/my_favorite_list_model.dart';
 import 'package:esjzone/app/data/novel_chapter_list_model.dart';
 import 'package:esjzone/app/data/novel_detail_model.dart';
@@ -18,6 +19,12 @@ class EsjzoneParseData {
   final Future<String> htmlData;
 
   EsjzoneParseData(this.htmlData);
+
+  /// 是否登录状态
+  Future<LoginUser> getLoginUser() async {
+    String data = await htmlData;
+    return EsjzoneSelector.getLoginUser(data);
+  }
 
   /// 获取页数和总页数
   Future<int?> getPagination() async {

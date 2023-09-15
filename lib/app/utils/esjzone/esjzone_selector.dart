@@ -5,12 +5,14 @@
  * @FilePath: \esjzone\lib\app\utils\esjzone\esjzone_selector.dart
  */
 import 'package:esjzone/app/data/comment_list_model.dart';
+import 'package:esjzone/app/data/login_user_model.dart';
 import 'package:esjzone/app/data/my_favorite_list_model.dart';
 import 'package:esjzone/app/data/novel_chapter_list_model.dart';
 import 'package:esjzone/app/data/novel_detail_model.dart';
 import 'package:esjzone/app/data/novel_detail_star_model.dart';
 import 'package:esjzone/app/data/novel_list_model.dart';
 import 'package:esjzone/app/data/novel_read_model.dart';
+import 'package:esjzone/env.dart';
 import 'package:html/dom.dart';
 import 'package:html/parser.dart';
 import 'package:string_validator/string_validator.dart';
@@ -30,6 +32,41 @@ class EsjzoneSelector {
     }
 
     return row.text;
+  }
+
+  /// 是否登录状态
+  static LoginUser getLoginUser(String? input) {
+    if (input == null || input.isEmpty) {
+      return LoginUser.fromJson({});
+    }
+
+    Document doc = parse(input);
+    var q = doc.querySelector('div.account > ul.toolbar-dropdown');
+
+    Element? avatarEl =
+        q?.querySelector('li.sub-menu-user > div.user-ava > img');
+    Element? usernameEl =
+        q?.querySelector('li.sub-menu-user > div.user-info > .user-name');
+    Element? expEl = q?.querySelector(
+        'li.sub-menu-user > div.user-info > .text-exp:not(.mem-level)');
+    Element? levelEl = q?.querySelector(
+        'li.sub-menu-user > div.user-info > .text-exp.mem-level');
+    bool isLogin =
+        q?.querySelector('li > a[href="/my/logout"]') == null ? false : true;
+
+    String? avatarSrc = avatarEl?.attributes['src'];
+    String? avatar =
+        avatarSrc != null ? '${Env.envConfig.apiHost}$avatarSrc' : null;
+
+    Uri avatarUri = Uri.parse(avatar ?? '');
+
+    return LoginUser.fromJson({
+      'avatar': '${avatarUri.origin}${avatarUri.path}',
+      'username': usernameEl?.text,
+      'exp': expEl?.text,
+      'level': levelEl?.text,
+      'isLogin': isLogin,
+    });
   }
 
   /// 获取页数和总页数
