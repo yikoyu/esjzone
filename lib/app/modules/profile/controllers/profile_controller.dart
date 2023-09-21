@@ -8,7 +8,6 @@ import 'package:esjzone/app/utils/esjzone/esjzone.dart';
 import 'package:esjzone/app/utils/request/request.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get_storage/get_storage.dart';
 
 class ProfileController extends GetxController {
   final formKey = GlobalKey<FormState>();

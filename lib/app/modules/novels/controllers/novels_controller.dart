@@ -4,7 +4,10 @@
  * @LastEditTime: 2023-09-09 23:14:29
  * @FilePath: \esjzone\lib\app\modules\novels\controllers\novels_controller.dart
  */
+import 'package:dio/dio.dart';
 import 'package:easy_refresh/easy_refresh.dart';
+import 'package:esjzone/app/controllers/login_user_controllers.dart';
+import 'package:esjzone/app/widgets/load_view.dart';
 import 'package:flutter/material.dart';
 import 'package:esjzone/app/data/novel_list_model.dart';
 import 'package:esjzone/app/utils/enum.dart';
@@ -14,6 +17,8 @@ import 'package:get/get.dart';
 class NovelsController extends GetxController {
   EasyRefreshController easyRefreshController = EasyRefreshController(
       controlFinishLoad: true, controlFinishRefresh: true);
+  LoadingViewController loadingViewController = LoadingViewController();
+  LoginUserController loginUser = Get.put(LoginUserController());
 
   SortLabel sortValue = SortLabel.updated;
   CategoryLabel categoryValue = CategoryLabel.all;
@@ -40,6 +45,29 @@ class NovelsController extends GetxController {
     debugPrint('筛选 >> ${sortLabel?.value} >> ${categoryLabel?.value}');
   }
 
+  Future<void> onLoad() async {
+    loadingViewController.loading();
+
+    try {
+      await getNovelListData(refresh: true);
+      if (novelList.isEmpty) {
+        loadingViewController.empty();
+        return;
+      }
+
+      loadingViewController.success();
+    } on DioException catch (e) {
+      if (e.type == DioExceptionType.connectionTimeout ||
+          e.type == DioExceptionType.unknown) {
+        loadingViewController.networkBlocked();
+      } else {
+        loadingViewController.error();
+      }
+    } catch (e) {
+      loadingViewController.error();
+    }
+  }
+
   Future<void> getNovelListData({bool refresh = false}) async {
     if (refresh) {
       page = 1;
@@ -52,6 +80,7 @@ class NovelsController extends GetxController {
     List<NovelList> value = await esjzone.novelList();
     hotTagList.value = await esjzone.hotTagList();
     int? total = await esjzone.getPagination();
+    loginUser.getLoginUser(esjzone);
 
     debugPrint('热门标签 > $hotTagList');
 

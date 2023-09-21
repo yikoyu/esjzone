@@ -6,6 +6,7 @@
  */
 import 'package:dio/dio.dart';
 import 'package:easy_refresh/easy_refresh.dart';
+import 'package:esjzone/app/controllers/login_user_controllers.dart';
 import 'package:esjzone/app/data/my_favorite_list_model.dart';
 import 'package:esjzone/app/utils/esjzone/esjzone.dart';
 import 'package:esjzone/app/widgets/load_view.dart';
@@ -16,6 +17,7 @@ class HomeController extends GetxController {
   EasyRefreshController easyRefreshController = EasyRefreshController(
       controlFinishLoad: true, controlFinishRefresh: true);
   LoadingViewController loadingViewController = LoadingViewController();
+  LoginUserController loginUser = Get.put(LoginUserController());
 
   var myNovelFavoriteList = <MyFavoriteList>[].obs;
   int page = 1;
@@ -38,6 +40,11 @@ class HomeController extends GetxController {
 
     try {
       await getMyFavoriteList(refresh: true);
+      if (myNovelFavoriteList.isEmpty) {
+        loadingViewController.empty();
+        return;
+      }
+
       loadingViewController.success();
     } on DioException catch (e) {
       if (e.type == DioExceptionType.connectionTimeout ||
@@ -61,9 +68,10 @@ class HomeController extends GetxController {
 
     List<MyFavoriteList> value = await esjzone.myFavoriteList();
     int? total = await esjzone.getPagination();
+    loginUser.getLoginUser(esjzone);
 
     // 列表为空，最后一页
-    debugPrint('pagination > $total > $page');
+    debugPrint('pagination > $refresh > $total > $page');
     if (total != null && (page > total)) {
       easyRefreshController.finishLoad(IndicatorResult.noMore);
       return;
