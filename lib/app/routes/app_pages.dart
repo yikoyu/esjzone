@@ -16,6 +16,8 @@ import '../modules/search_novels/bindings/search_novels_binding.dart';
 import '../modules/search_novels/views/search_novels_view.dart';
 import '../modules/searching/bindings/searching_binding.dart';
 import '../modules/searching/views/searching_view.dart';
+import '../modules/settings/bindings/settings_binding.dart';
+import '../modules/settings/views/settings_view.dart';
 
 part 'app_routes.dart';
 
@@ -64,6 +66,11 @@ class AppPages {
       name: _Paths.NOVEL_READ,
       page: () => const NovelReadView(),
       binding: NovelReadBinding(),
+    ),
+    GetPage(
+      name: _Paths.SETTINGS,
+      page: () => const SettingsView(),
+      binding: SettingsBinding(),
     ),
   ];
 }
