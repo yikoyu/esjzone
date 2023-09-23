@@ -87,13 +87,13 @@ class EsjzoneHttp {
   }
 
   /// 授权登录
-  static Future<void> login(
+  static Future<bool> login(
       {required String email, required String pwd}) async {
     HttpUtils.deleteAllCookie();
     // 获取授权
     String? authCode =
         await _getActionAuth(EsjzoneUrl.POST_MY_LOGIN, errorTitle: '登录失败');
-    if (authCode.isEmpty) return;
+    if (authCode.isEmpty) return false;
 
     // 登录
     dynamic data =
@@ -113,12 +113,14 @@ class EsjzoneHttp {
         ..closeAllSnackbars()
         ..snackbar('登录异常', msg, backgroundColor: Colors.red.shade200);
 
-      return;
+      return false;
     }
 
     Get
       ..closeAllSnackbars()
       ..snackbar('提示', '登录成功');
+
+    return true;
   }
 
   /// 小说收藏

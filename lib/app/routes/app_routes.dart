@@ -12,6 +12,7 @@ abstract class Routes {
   static const NOVEL_DETAIL = _Paths.NOVEL_DETAIL;
   static const NOVEL_READ = _Paths.NOVEL_READ;
   static const SETTINGS = _Paths.SETTINGS;
+  static const LOGIN = _Paths.LOGIN;
 }
 
 abstract class _Paths {
@@ -25,4 +26,5 @@ abstract class _Paths {
   static const NOVEL_DETAIL = '/novel-detail';
   static const NOVEL_READ = '/novel-read';
   static const SETTINGS = '/settings';
+  static const LOGIN = '/login';
 }

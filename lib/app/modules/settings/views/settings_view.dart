@@ -54,7 +54,8 @@ class SettingsView extends GetView<SettingsController> {
           titleTextStyle:
               const TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
           border: false,
-          showTrailing: false)),
+          showTrailing: false,
+          onTap: controller.tologin)),
     ];
   }
 

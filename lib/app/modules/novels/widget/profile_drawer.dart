@@ -1,5 +1,6 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:esjzone/app/modules/login/views/login_view.dart';
 import 'package:esjzone/app/modules/settings/views/settings_view.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -40,7 +41,8 @@ class _ProfileDrawerState extends State<ProfileDrawer> {
       _DrawerItemData(
           leading: login.isLogin.value ? Icons.logout : Icons.login,
           title: login.isLogin.value ? '切换账号' : '登录账号',
-          trailing: null),
+          trailing: null,
+          onTap: tologin),
     ];
   }
 
@@ -55,7 +57,7 @@ class _ProfileDrawerState extends State<ProfileDrawer> {
               backgroundImage: CachedNetworkImageProvider(login.avatar.value)),
           const SizedBox(height: 12),
           Text(
-            login.username.value,
+            login.isLogin.value ? login.username.value : '请登录',
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
             style: const TextStyle(fontSize: 18),
@@ -79,7 +81,12 @@ class _ProfileDrawerState extends State<ProfileDrawer> {
 
   void toSettings() {
     Get.back();
-    Get.to(() => const SettingsView());
+    Get.to(() => const SettingsView(), transition: Transition.rightToLeft);
+  }
+
+  void tologin() {
+    Get.back();
+    Get.to(() => const LoginView(), transition: Transition.rightToLeft);
   }
 }
 

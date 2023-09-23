@@ -1,4 +1,5 @@
 import 'package:esjzone/app/controllers/login_user_controllers.dart';
+import 'package:esjzone/app/modules/login/views/login_view.dart';
 import 'package:esjzone/app/utils/app_storage.dart';
 import 'package:esjzone/app/utils/app_temp_size.dart';
 import 'package:esjzone/app/utils/enum.dart';
@@ -72,5 +73,9 @@ class SettingsController extends GetxController {
   void toGithub() async {
     launchUrl(Uri.parse('https://github.com/yikoyu/esjzone'),
         mode: LaunchMode.externalApplication);
+  }
+
+  void tologin() {
+    Get.to(() => const LoginView());
   }
 }
