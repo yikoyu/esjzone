@@ -58,10 +58,11 @@ class EsjzoneSelector {
     String? avatar =
         avatarSrc != null ? '${Env.envConfig.apiHost}$avatarSrc' : null;
 
-    Uri avatarUri = Uri.parse(avatar ?? '');
+    Uri? avatarUri = avatar != null ? Uri.parse(avatar) : null;
 
     return LoginUser.fromJson({
-      'avatar': '${avatarUri.origin}${avatarUri.path}',
+      'avatar':
+          avatarUri != null ? '${avatarUri.origin}${avatarUri.path}' : null,
       'username': usernameEl?.text,
       'exp': expEl?.text,
       'level': levelEl?.text,

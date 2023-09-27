@@ -1,3 +1,6 @@
+import 'package:esjzone/app/modules/home/controllers/home_controller.dart';
+import 'package:esjzone/app/modules/index/controllers/index_controller.dart';
+import 'package:esjzone/app/routes/app_pages.dart';
 import 'package:esjzone/app/utils/esjzone/esjzone_http.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -22,7 +25,13 @@ class LoginController extends GetxController {
         loggingIn.value = false;
 
         if (isLogin) {
-          Get.back(canPop: false);
+          Get.until((route) => Get.currentRoute == Routes.INDEX);
+
+          IndexController indexController = Get.find<IndexController>();
+          HomeController homeController = Get.find<HomeController>();
+
+          indexController.onJumpTo(0, jump: true);
+          homeController.onLoad();
         }
       } catch (e) {
         loggingIn.value = false;

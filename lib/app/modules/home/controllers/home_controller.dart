@@ -40,6 +40,12 @@ class HomeController extends GetxController {
 
     try {
       await getMyFavoriteList(refresh: true);
+
+      if (!loginUser.isLogin.value) {
+        loadingViewController.notLogin();
+        return;
+      }
+
       if (myNovelFavoriteList.isEmpty) {
         loadingViewController.empty();
         return;
@@ -68,7 +74,12 @@ class HomeController extends GetxController {
 
     List<MyFavoriteList> value = await esjzone.myFavoriteList();
     int? total = await esjzone.getPagination();
-    loginUser.getLoginUser(esjzone);
+
+    await loginUser.getLoginUser(esjzone);
+    if (!loginUser.isLogin.value) {
+      loadingViewController.notLogin();
+      return;
+    }
 
     // 列表为空，最后一页
     debugPrint('pagination > $refresh > $total > $page');

@@ -7,11 +7,10 @@
 import 'package:flutter/widgets.dart';
 import 'package:esjzone/app/modules/home/views/home_view.dart';
 import 'package:esjzone/app/modules/novels/views/novels_view.dart';
-import 'package:esjzone/app/modules/profile/views/profile_view.dart';
 import 'package:get/get.dart';
 
 class IndexController extends GetxController {
-  List<Widget> pages = const [HomeView(), NovelsView(), ProfileView()];
+  List<Widget> pages = const [HomeView(), NovelsView()];
   var currentIndex = 0.obs;
 
   final PageController pageController = PageController(initialPage: 0);

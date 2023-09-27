@@ -4,6 +4,7 @@
  * @LastEditTime: 2023-09-02 19:57:40
  * @FilePath: \esjzone\lib\app\widgets\load_view.dart
  */
+import 'package:esjzone/app/routes/app_pages.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:get/get.dart';
@@ -87,6 +88,8 @@ class _LoadingViewState extends State<LoadingView> {
         return _buildNetworkBlockedView(context);
       case LoadingViewStatus.error:
         return _buildErrorView();
+      case LoadingViewStatus.not_login:
+        return _buildNotLoginView();
     }
   }
 
@@ -137,10 +140,24 @@ class _LoadingViewState extends State<LoadingView> {
     );
   }
 
+  // 需要登录
+  Widget _buildNotLoginView() {
+    return _buildGeneralTapView(
+      desc: '你还未登录，请登录',
+      buttonText: '登 录',
+      onPressed: () => Get.toNamed(Routes.LOGIN),
+      child: Image.asset(
+        'assets/images/load-data-error.png',
+        width: 150,
+      ),
+    );
+  }
+
   // 通用错误页面面板
   Widget _buildGeneralTapView(
       {required Widget child,
       required String desc,
+      String buttonText = '点击重试',
       void Function()? onPressed}) {
     final Widget errorWidget = Center(
       child: Column(
@@ -154,7 +171,7 @@ class _LoadingViewState extends State<LoadingView> {
                         onPressed: onPressed,
                         style: const ButtonStyle(
                             visualDensity: VisualDensity.compact),
-                        child: const Text('点击重试'))
+                        child: Text(buttonText))
                     .paddingOnly(top: 12)
                 : const SizedBox()
           ]),
@@ -199,6 +216,11 @@ class LoadingViewController extends ChangeNotifier {
     notifyListeners();
   }
 
+  void notLogin() {
+    loadingStatus = LoadingViewStatus.not_login;
+    notifyListeners();
+  }
+
   /// 更新LoadingStatus
   void updateStatus(LoadingViewStatus status) {
     loadingStatus = status;
@@ -214,4 +236,5 @@ enum LoadingViewStatus {
   loading_suc_but_empty, // 加载成功但是数据为空
   network_blocked, // 网络加载错误
   error, // 加载错误
+  not_login, // 未登录
 }

@@ -37,7 +37,7 @@ class IndexView extends GetView<IndexController> {
             items: [
               _bottomItem('home'.tr, Icons.home_outlined, Icons.home),
               _bottomItem('novels'.tr, Icons.book_outlined, Icons.book),
-              _bottomItem('profile'.tr, Icons.person_outline, Icons.person),
+              // _bottomItem('profile'.tr, Icons.person_outline, Icons.person),
             ],
           )),
     );
