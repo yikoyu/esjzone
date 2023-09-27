@@ -5,13 +5,16 @@
  * @FilePath: \esjzone\lib\app\modules\novel_read\views\novel_read_view.dart
  */
 import 'package:esjzone/app/widgets/load_view.dart';
-import 'package:esjzone/app/widgets/novel/novel_chapters_list.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
 
 import 'package:get/get.dart';
 
 import '../controllers/novel_read_controller.dart';
+import '../widgets/read_novel_button_panel.dart';
+import '../widgets/read_novel_chapters_drawer.dart';
+import '../widgets/read_novel_like_button.dart';
+import '../widgets/read_novel_top.dart';
 
 class NovelReadView extends GetView<NovelReadController> {
   const NovelReadView({Key? key, this.uniqueTag}) : super(key: key);
@@ -26,8 +29,14 @@ class NovelReadView extends GetView<NovelReadController> {
     Get.put(NovelReadController(), tag: tag);
 
     return Scaffold(
-      drawerEdgeDragWidth: 150,
-      endDrawer: _buildEndDrawer(),
+      drawerEdgeDragWidth: 100,
+      // endDrawer: _buildEndDrawer(),
+      endDrawer: Obx(() => ReadNovelChaptersDrawer(
+            title: controller.readDetail.value.novelName ?? '',
+            activeChapterId: controller.detail.detail.value.activeChapterId,
+            list: controller.detail.chapterList,
+            onTapChapter: controller.toChapter,
+          )),
       body: LoadingView(
           controller: controller.loadingViewController,
           onEmptyTap: controller.onLoad,
@@ -35,36 +44,6 @@ class NovelReadView extends GetView<NovelReadController> {
           onNetworkBlockedTap: controller.onLoad,
           child: _build(context)),
     );
-  }
-
-  Widget _buildEndDrawer() {
-    return Builder(
-        builder: ((BuildContext context) => Drawer(
-              backgroundColor: Get.isDarkMode ? Colors.black : Colors.white,
-              width: 306,
-              child: SafeArea(
-                  child: Column(
-                children: [
-                  Text(
-                    controller.readDetail.value.novelName ?? '',
-                    style: const TextStyle(
-                        fontSize: 16, fontWeight: FontWeight.bold),
-                  ).paddingAll(6),
-                  Expanded(
-                      child: NovelChaptersList(
-                          sliver: false,
-                          showDetail: true,
-                          activeChapterId:
-                              controller.detail.detail.value.activeChapterId,
-                          onTap: ({novelId, chapterId}) {
-                            Scaffold.of(context).closeEndDrawer();
-                            controller.toChapter(
-                                novelId: novelId, chapterId: chapterId);
-                          },
-                          chapterList: controller.detail.chapterList))
-                ],
-              )),
-            )));
   }
 
   Widget _build(BuildContext context) {
@@ -83,117 +62,41 @@ class NovelReadView extends GetView<NovelReadController> {
         SliverToBoxAdapter(
             child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Container(
-              padding: const EdgeInsets.fromLTRB(6, 12, 6, 6),
-              child: Obx(() => Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        children: [
-                          const Icon(Icons.edit_note).paddingOnly(right: 6),
-                          RichText(
-                              text: TextSpan(children: [
-                            TextSpan(
-                                text: 'by ',
-                                style: TextStyle(
-                                    color: Get.isDarkMode
-                                        ? Colors.white
-                                        : Colors.black)),
-                            TextSpan(
-                                text: controller.readDetail.value.authorName ??
-                                    '',
-                                style: TextStyle(
-                                    color:
-                                        Theme.of(context).colorScheme.primary)),
-                          ]))
-                        ],
-                      ),
-                      Row(
-                        children: [
-                          const Icon(Icons.update).paddingOnly(right: 6),
-                          Text(controller.readDetail.value.updateTime ?? '')
-                        ],
-                      ).paddingOnly(top: 6),
-                      Row(
-                        children: [
-                          const Icon(Icons.abc_outlined).paddingOnly(right: 6),
-                          Text(controller.readDetail.value.words ?? '')
-                        ],
-                      ).paddingOnly(top: 6),
-                      Text(
-                        controller.readDetail.value.chapterName ?? '',
-                        style: const TextStyle(
-                            fontSize: 18, fontWeight: FontWeight.w500),
-                      ).paddingOnly(top: 6)
-                    ],
-                  )),
-            ),
-            const Divider(),
-            Obx(() => _buildBtnPanel()),
-            const Divider(),
-            Container(
-              padding: const EdgeInsets.all(6),
-              child: Obx(() =>
-                  HtmlWidget(controller.readDetail.value.contentHtml ?? '')),
-            ),
-            _buildLikeBtn(),
-            const Divider(),
-            Obx(() => _buildBtnPanel().paddingOnly(bottom: 48))
-          ],
+          children: _buildReadColumn(),
         ))
       ],
     );
   }
 
-  Widget _buildLikeBtn() {
-    return Container(
-        padding: const EdgeInsets.all(6),
-        child: Obx(() => TextButton.icon(
-            onPressed: controller.onHandleLike,
-            icon: (controller.readDetail.value.isLike ?? false)
-                ? const Icon(Icons.thumb_up_alt)
-                : const Icon(Icons.thumb_up_alt_outlined),
-            label: Text(controller.readDetail.value.likes ?? '0'))));
+  List<Widget> _buildReadColumn() {
+    return [
+      ReadNovelTop(readDetail: controller.readDetail),
+      const Divider(),
+      Obx(() => ReadNovelButtonPanel(
+          novelId: controller.readDetail.value.novelId,
+          chapterNextId: controller.readDetail.value.chapterNextId,
+          chapterPrevId: controller.readDetail.value.chapterPrevId,
+          onTapChapter: controller.toChapter)),
+      const Divider(),
+      _buildReadContent(),
+      ReadNovelLikeButton(
+          readDetail: controller.readDetail,
+          onTap: (isLiked) => controller.onForumLikesLike()),
+      const Divider(),
+      Obx(() => ReadNovelButtonPanel(
+          novelId: controller.readDetail.value.novelId,
+          chapterNextId: controller.readDetail.value.chapterNextId,
+          chapterPrevId: controller.readDetail.value.chapterPrevId,
+          onTapChapter: controller.toChapter)),
+      const SizedBox(height: 48)
+    ];
   }
 
-  Widget _buildBtnPanel() {
+  Widget _buildReadContent() {
     return Container(
-        padding: const EdgeInsets.all(6),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Visibility(
-                visible: controller.readDetail.value.chapterPrevId != null,
-                maintainState: true,
-                maintainAnimation: true,
-                maintainSize: true,
-                child: ElevatedButton.icon(
-                    onPressed: () => controller.toChapter(
-                        novelId: controller.readDetail.value.novelId,
-                        chapterId: controller.readDetail.value.chapterPrevId),
-                    icon: const Icon(Icons.arrow_back),
-                    label: const Text('上一章'))),
-            // IconButton(
-            //   onPressed: () {},
-            //   icon: const Icon(Icons.list),
-            //   style: const ButtonStyle(elevation: MaterialStatePropertyAll(12)),
-            // ),
-            Visibility(
-                visible: controller.readDetail.value.chapterNextId != null,
-                maintainState: true,
-                maintainAnimation: true,
-                maintainSize: true,
-                child: Directionality(
-                    textDirection: TextDirection.rtl,
-                    child: ElevatedButton.icon(
-                        onPressed: () => controller.toChapter(
-                            novelId: controller.readDetail.value.novelId,
-                            chapterId:
-                                controller.readDetail.value.chapterNextId),
-                        icon: const Icon(Icons.arrow_back),
-                        label: const Text('下一章')))),
-          ],
-        ));
+      padding: const EdgeInsets.all(6),
+      child:
+          Obx(() => HtmlWidget(controller.readDetail.value.contentHtml ?? '')),
+    );
   }
 }

@@ -85,7 +85,7 @@ class NovelReadController extends GetxController {
     detail.updateDetail(chapterId);
   }
 
-  Future<void> onHandleLike() async {
+  Future<void> onForumLikesLike() async {
     EasyLoading.show(status: '加载中...');
 
     try {
@@ -115,6 +115,15 @@ class NovelReadController extends GetxController {
       }
     } catch (e) {
       EasyLoading.dismiss();
+    }
+  }
+
+  Future<bool> onHandleLike() async {
+    try {
+      await onForumLikesLike();
+      return readDetail.value.isLike ?? false;
+    } catch (e) {
+      return readDetail.value.isLike ?? false;
     }
   }
 }
