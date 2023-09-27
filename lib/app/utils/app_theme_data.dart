@@ -48,7 +48,7 @@ class AppThemeData {
   }
 
   static void changeTheme({bool? isDarkMode}) {
-    if (isDarkMode != null && isDarkMode) {
+    if (isDarkMode != null) {
       Get.changeTheme(isDarkMode ? light() : dark());
       return;
     }

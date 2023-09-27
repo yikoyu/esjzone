@@ -10,11 +10,17 @@ import 'package:get/get.dart';
 
 class FilterBar extends StatefulWidget implements PreferredSizeWidget {
   final double? itemHeight;
+  final CategoryLabel initCategory;
+  final SortLabel initSort;
   final void Function(SortLabel? sortLabel, CategoryLabel? categoryLabel)?
       onChanged;
 
   const FilterBar(
-      {super.key, this.itemHeight = kMinInteractiveDimension, this.onChanged});
+      {super.key,
+      this.itemHeight = kMinInteractiveDimension,
+      this.initCategory = CategoryLabel.all,
+      this.initSort = SortLabel.updated,
+      this.onChanged});
 
   @override
   Size get preferredSize =>
@@ -25,8 +31,8 @@ class FilterBar extends StatefulWidget implements PreferredSizeWidget {
 }
 
 class _FilterBarState extends State<FilterBar> {
-  SortLabel? sortValue = SortLabel.updated;
-  CategoryLabel? categoryValue = CategoryLabel.all;
+  late SortLabel? sortValue;
+  late CategoryLabel? categoryValue;
 
   /// 排序选项列表
   final List<DropdownMenuItem<SortLabel>> _sortLabelEntries =
@@ -45,6 +51,14 @@ class _FilterBarState extends State<FilterBar> {
       child: Text(categoryLabel.label.tr),
     );
   }).toList();
+
+  @override
+  void initState() {
+    sortValue = widget.initSort;
+    categoryValue = widget.initCategory;
+
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {

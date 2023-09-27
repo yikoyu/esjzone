@@ -7,6 +7,7 @@
 import 'package:dio/dio.dart';
 import 'package:easy_refresh/easy_refresh.dart';
 import 'package:esjzone/app/controllers/login_user_controllers.dart';
+import 'package:esjzone/app/utils/app_storage.dart';
 import 'package:esjzone/app/widgets/load_view.dart';
 import 'package:flutter/material.dart';
 import 'package:esjzone/app/data/novel_list_model.dart';
@@ -18,13 +19,26 @@ class NovelsController extends GetxController {
   EasyRefreshController easyRefreshController = EasyRefreshController(
       controlFinishLoad: true, controlFinishRefresh: true);
   LoadingViewController loadingViewController = LoadingViewController();
-  LoginUserController loginUser = Get.put(LoginUserController());
+  LoginUserController loginUser = Get.find<LoginUserController>();
+
+  AppStorage<String> likeCategoryStorageController =
+      AppStorage<String>(AppStorageKeys.settingLikeNovelCategory);
 
   SortLabel sortValue = SortLabel.updated;
-  CategoryLabel categoryValue = CategoryLabel.all;
+  late CategoryLabel categoryValue;
   var novelList = <NovelList>[].obs;
   var hotTagList = <String>[].obs; // searching 页面用
   int page = 1;
+
+  @override
+  void onInit() {
+    // 读取记录的分类偏好
+    categoryValue =
+        stringToCategoryLabel(likeCategoryStorageController.read()) ??
+            CategoryLabel.all;
+
+    super.onInit();
+  }
 
   @override
   void onClose() {

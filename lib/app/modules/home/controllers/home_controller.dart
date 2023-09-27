@@ -17,7 +17,7 @@ class HomeController extends GetxController {
   EasyRefreshController easyRefreshController = EasyRefreshController(
       controlFinishLoad: true, controlFinishRefresh: true);
   LoadingViewController loadingViewController = LoadingViewController();
-  LoginUserController loginUser = Get.put(LoginUserController());
+  LoginUserController loginUser = Get.find<LoginUserController>();
 
   var myNovelFavoriteList = <MyFavoriteList>[].obs;
   int page = 1;

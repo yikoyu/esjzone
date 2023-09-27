@@ -16,20 +16,20 @@ class SettingNovelCategory extends StatefulWidget {
 }
 
 class _SettingNovelCategoryState extends State<SettingNovelCategory> {
-  final likeCategory = ReadWriteValue<CategoryLabel>(
-      AppStorageKeys.settingLikeNovelCategory.key, CategoryLabel.all);
+  ReadWriteValue<String> likeCategory = ReadWriteValue<String>(
+      AppStorageKeys.settingLikeNovelCategory.key, CategoryLabel.all.value);
 
   List<SettingListTile> get _categoryLabelEntries =>
       CategoryLabel.values.map((categoryLabel) {
         return SettingListTile(
           title: categoryLabel.label.tr,
-          selected: categoryLabel == likeCategory.val,
-          trailingIconWidget: categoryLabel == likeCategory.val
+          selected: categoryLabel.value == likeCategory.val,
+          trailingIconWidget: categoryLabel.value == likeCategory.val
               ? const Icon(Icons.check)
               : const SizedBox(),
           onTap: () {
             setState(() {
-              likeCategory.val = categoryLabel;
+              likeCategory.val = categoryLabel.value;
             });
             widget.onTap?.call(categoryLabel);
           },

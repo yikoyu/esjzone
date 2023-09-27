@@ -11,9 +11,9 @@ import 'package:url_launcher/url_launcher.dart';
 import '../widgets/setting_novel_category.dart';
 
 class SettingsController extends GetxController {
-  AppStorage<CategoryLabel> likeCategoryStorageController =
-      AppStorage<CategoryLabel>(AppStorageKeys.settingLikeNovelCategory);
-  LoginUserController login = Get.put(LoginUserController());
+  AppStorage<String> likeCategoryStorageController =
+      AppStorage<String>(AppStorageKeys.settingLikeNovelCategory);
+  LoginUserController login = Get.find<LoginUserController>();
 
   var tempSize = '0.00M'.obs;
   var version = "".obs;
@@ -24,7 +24,8 @@ class SettingsController extends GetxController {
   Future<void> onInit() async {
     getSize();
     initPackageInfo();
-    CategoryLabel? likeCategoryStorage = likeCategoryStorageController.read();
+    CategoryLabel? likeCategoryStorage =
+        stringToCategoryLabel(likeCategoryStorageController.read());
     if (likeCategoryStorage != null) {
       likeCategory.value = likeCategoryStorage;
     }

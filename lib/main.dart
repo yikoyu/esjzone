@@ -5,6 +5,7 @@
  * @FilePath: \esjzone\lib\main.dart
  */
 
+import 'package:esjzone/main_binding.dart';
 import 'package:flutter/material.dart';
 import 'package:esjzone/app/utils/app_theme_data.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
@@ -40,6 +41,7 @@ Future<void> main() async {
         initialRoute: AppPages.INITIAL,
         getPages: AppPages.routes,
         builder: EasyLoading.init(),
+        initialBinding: MainBinding(),
         // theme
         theme: AppThemeData.light(),
         darkTheme: AppThemeData.dark(),

@@ -32,7 +32,9 @@ class NovelsView extends GetView<NovelsController> {
         toolbarHeight: 36,
         enabled: false,
         leading: Obx(() => _buildLeading(controller.loginUser.avatar.value)),
-        bottom: FilterBar(onChanged: controller.onFilterChange),
+        bottom: FilterBar(
+            initCategory: controller.categoryValue,
+            onChanged: controller.onFilterChange),
         onTap: () =>
             Get.to(() => const SearchingView(), transition: Transition.fadeIn),
       ),

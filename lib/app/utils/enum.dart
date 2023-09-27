@@ -29,3 +29,18 @@ enum CategoryLabel {
   final String label;
   final String value;
 }
+
+CategoryLabel? stringToCategoryLabel(String? value) {
+  switch (value) {
+    case '0':
+      return CategoryLabel.all;
+    case '1':
+      return CategoryLabel.japan;
+    case '2':
+      return CategoryLabel.original;
+    case '3':
+      return CategoryLabel.korea;
+    default:
+      return null;
+  }
+}
