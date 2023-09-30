@@ -12,6 +12,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../controllers/home_controller.dart';
+// import '../widgets/home_chip_bar.dart';
 
 class HomeView extends GetView<HomeController> {
   const HomeView({Key? key}) : super(key: key);
@@ -23,6 +24,10 @@ class HomeView extends GetView<HomeController> {
       appBar: AppBar(
         title: const Text('我的书架'),
         centerTitle: true,
+        // bottom: HomeChipBar(onChange: (isUpdate) {
+        //   controller.isUpdate = isUpdate;
+        //   controller.easyRefreshController.callRefresh();
+        // }),
       ),
       body: LoadingView(
           showErrorBack: false,

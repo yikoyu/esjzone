@@ -21,6 +21,7 @@ class HomeController extends GetxController {
 
   var myNovelFavoriteList = <MyFavoriteList>[].obs;
   int page = 1;
+  bool isUpdate = true;
 
   @override
   void onInit() {
@@ -70,7 +71,7 @@ class HomeController extends GetxController {
     }
 
     final EsjzoneParseData esjzone = EsjzoneParseData(
-        EsjzoneHttp.getMyFavoritePage(page: page, isUpdate: true));
+        EsjzoneHttp.getMyFavoritePage(page: page, isUpdate: isUpdate));
 
     List<MyFavoriteList> value = await esjzone.myFavoriteList();
     int? total = await esjzone.getPagination();
