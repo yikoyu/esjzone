@@ -2,11 +2,11 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:esjzone/app/modules/login/views/login_view.dart';
 import 'package:esjzone/app/modules/settings/views/settings_view.dart';
+import 'package:esjzone/app/utils/app_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import 'package:esjzone/app/controllers/login_user_controllers.dart';
-import 'package:esjzone/app/utils/app_theme_data.dart';
 
 class ProfileDrawer extends StatefulWidget {
   const ProfileDrawer({super.key});
@@ -17,6 +17,16 @@ class ProfileDrawer extends StatefulWidget {
 
 class _ProfileDrawerState extends State<ProfileDrawer> {
   LoginUserController get login => Get.find<LoginUserController>();
+  AppStorage<String> themeModeStorageController =
+      AppStorage<String>(AppStorageKeys.themeMode);
+
+  bool systemTheme = true;
+
+  @override
+  void initState() {
+    systemTheme = themeModeStorageController.read() == 'system';
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -37,6 +47,10 @@ class _ProfileDrawerState extends State<ProfileDrawer> {
           leading: Icons.lightbulb_outline,
           title: '深色模式',
           trailing: _buildThemeSwitch(context)),
+      _DrawerItemData(
+          leading: Icons.brightness_6_outlined,
+          title: '跟随系统',
+          trailing: _buildSystemThemeSwitch(context)),
       const Divider(),
       _DrawerItemData(
           leading: login.isLogin.value ? Icons.logout : Icons.login,
@@ -71,19 +85,46 @@ class _ProfileDrawerState extends State<ProfileDrawer> {
   Widget _buildThemeSwitch(BuildContext context) {
     return Switch(
       value: context.isDarkMode,
+      onChanged: systemTheme ? null : toggleTheme,
+    );
+  }
+
+  Widget _buildSystemThemeSwitch(BuildContext context) {
+    return Switch(
+      value: systemTheme,
       onChanged: (value) {
         setState(() {
-          AppThemeData.changeTheme(isDarkMode: !value);
+          systemTheme = value;
         });
+
+        if (value) {
+          themeModeStorageController.write('system');
+          Get.changeThemeMode(ThemeMode.system);
+          return;
+        }
+
+        toggleTheme(context.isDarkMode);
       },
     );
   }
 
+  /// 切换深色/浅色
+  void toggleTheme(bool value) {
+    setState(() {
+      Get.changeThemeMode(value ? ThemeMode.dark : ThemeMode.light);
+      systemTheme = false;
+    });
+
+    themeModeStorageController.write(value ? 'dark' : 'light');
+  }
+
+  /// 跳转设置
   void toSettings() {
     Get.back();
     Get.to(() => const SettingsView(), transition: Transition.rightToLeft);
   }
 
+  /// 跳转登录
   void tologin() {
     Get.back();
     Get.to(() => const LoginView(), transition: Transition.rightToLeft);

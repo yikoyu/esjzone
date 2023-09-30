@@ -6,7 +6,6 @@
  */
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:esjzone/app/utils/app_theme_data.dart';
 
 import 'package:get/get.dart';
 import 'package:styled_widget/styled_widget.dart';
@@ -35,9 +34,6 @@ class ProfileView extends GetView<ProfileController> {
           ElevatedButton(
               onPressed: () => controller.deleteAllCookie(),
               child: const Text('删除全部Cookie')),
-          ElevatedButton(
-              onPressed: () => AppThemeData.changeTheme(),
-              child: const Text('切换主题')),
           ElevatedButton(
               onPressed: () => Get.updateLocale(const Locale('zh', 'CN')),
               child: const Text('切换中文')),

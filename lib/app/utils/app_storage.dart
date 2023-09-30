@@ -42,7 +42,8 @@ class AppStorage<T> {
 enum AppStorageKeys {
   /// 搜过的关键词
   searchHistoryTagList('search_history_tag_list'),
-  settingLikeNovelCategory('setting_like_novel_category');
+  settingLikeNovelCategory('setting_like_novel_category'),
+  themeMode('theme_mode');
 
   const AppStorageKeys(this.key);
   final String key;

@@ -6,7 +6,6 @@
  */
 import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 
 class AppThemeData {
   static ThemeData light() {
@@ -45,14 +44,5 @@ class AppThemeData {
       // To use the Playground font, add GoogleFonts package and uncomment
       // fontFamily: GoogleFonts.notoSans().fontFamily,
     );
-  }
-
-  static void changeTheme({bool? isDarkMode}) {
-    if (isDarkMode != null) {
-      Get.changeTheme(isDarkMode ? light() : dark());
-      return;
-    }
-
-    Get.changeTheme(Get.isDarkMode ? light() : dark());
   }
 }

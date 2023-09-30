@@ -15,6 +15,7 @@ import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 
 import 'app/routes/app_pages.dart';
+import 'app/utils/app_storage.dart';
 import 'app/utils/request/request.dart';
 import 'env.dart';
 import 'generated/locales.g.dart';
@@ -45,6 +46,7 @@ Future<void> main() async {
         // theme
         theme: AppThemeData.light(),
         darkTheme: AppThemeData.dark(),
+        themeMode: getThemeMode(),
         // translations
         translationsKeys: AppTranslation.translations,
         locale: Get.deviceLocale,
@@ -60,4 +62,22 @@ Future<void> main() async {
           GlobalWidgetsLocalizations.delegate,
         ]),
   );
+}
+
+ThemeMode getThemeMode() {
+  AppStorage<String> themeModeStorageController =
+      AppStorage<String>(AppStorageKeys.themeMode);
+
+  String? themeMode = themeModeStorageController.read();
+
+  switch (themeMode) {
+    case 'light':
+      return ThemeMode.light;
+    case 'dark':
+      return ThemeMode.dark;
+    case 'system':
+      return ThemeMode.system;
+    default:
+      return ThemeMode.system;
+  }
 }
