@@ -5,6 +5,7 @@
  * @FilePath: \esjzone\lib\app\modules\novel_read\controllers\novel_read_controller.dart
  */
 import 'package:dio/dio.dart';
+import 'package:esjzone/app/data/comment_list_model.dart';
 import 'package:esjzone/app/data/novel_read_model.dart';
 import 'package:esjzone/app/modules/novel_detail/controllers/novel_detail_controller.dart';
 import 'package:esjzone/app/utils/esjzone/esjzone.dart';
@@ -20,6 +21,7 @@ class NovelReadController extends GetxController {
   late final String chapterId;
 
   var readDetail = NovelRead().obs;
+  var comment = <CommentList>[].obs;
   ScrollController scrollController = ScrollController();
   LoadingViewController loadingViewController = LoadingViewController();
 
@@ -51,6 +53,9 @@ class NovelReadController extends GetxController {
       NovelRead detail = await esjzone.novelChapterReadDetail();
 
       readDetail.value = detail;
+      comment
+        ..clear()
+        ..addAll(await esjzone.commentList());
       loadingViewController.success();
     } on DioException catch (e) {
       if (e.type == DioExceptionType.connectionTimeout ||

@@ -5,6 +5,7 @@
  * @FilePath: \esjzone\lib\app\modules\novel_read\views\novel_read_view.dart
  */
 import 'package:esjzone/app/widgets/load_view.dart';
+import 'package:esjzone/app/widgets/novel/novel_comment_drawer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
 
@@ -29,20 +30,20 @@ class NovelReadView extends GetView<NovelReadController> {
     Get.put(NovelReadController(), tag: tag);
 
     return Scaffold(
-      drawerEdgeDragWidth: 100,
-      // endDrawer: _buildEndDrawer(),
-      endDrawer: Obx(() => ReadNovelChaptersDrawer(
+      drawerEdgeDragWidth: 50,
+      drawer: Obx(() => ReadNovelChaptersDrawer(
             title: controller.readDetail.value.novelName ?? '',
             activeChapterId: controller.detail.detail.value.activeChapterId,
             list: controller.detail.chapterList,
             onTapChapter: controller.toChapter,
           )),
+      endDrawer: NovelCommentDrawer(comment: controller.comment),
       body: LoadingView(
           controller: controller.loadingViewController,
           onEmptyTap: controller.onLoad,
           onErrorTap: controller.onLoad,
           onNetworkBlockedTap: controller.onLoad,
-          child: _build(context)),
+          child: Scrollbar(child: _build(context))),
     );
   }
 
@@ -58,6 +59,23 @@ class NovelReadView extends GetView<NovelReadController> {
           floating: true,
           toolbarHeight: 40,
           centerTitle: true,
+          leading: Row(
+            children: [
+              const BackButton(),
+              Builder(
+                  builder: ((context) => IconButton(
+                        onPressed: () => Scaffold.of(context).openDrawer(),
+                        icon: const Icon(Icons.list),
+                      )))
+            ],
+          ),
+          actions: [
+            Builder(
+                builder: (context) => IconButton(
+                    onPressed: () => Scaffold.of(context).openEndDrawer(),
+                    icon: const Icon(Icons.messenger_outline)))
+          ],
+          leadingWidth: 96,
         ),
         SliverToBoxAdapter(
             child: Column(

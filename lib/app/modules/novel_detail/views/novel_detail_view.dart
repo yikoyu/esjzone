@@ -11,6 +11,7 @@ import 'package:esjzone/app/modules/novel_detail/widgets/rating_detail_panel.dar
 import 'package:esjzone/app/widgets/cached_image.dart';
 import 'package:esjzone/app/widgets/load_view.dart';
 import 'package:esjzone/app/widgets/novel/novel_chapters_list.dart';
+import 'package:esjzone/app/widgets/novel/novel_comment_drawer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
 
@@ -33,6 +34,8 @@ class NovelDetailView extends GetView<NovelDetailController> {
     Get.put(NovelDetailController(), tag: tag);
 
     return Scaffold(
+      endDrawer: NovelCommentDrawer(comment: controller.comment),
+      drawerEdgeDragWidth: 50,
       body: LoadingView(
           controller: controller.loadingViewController,
           onEmptyTap: controller.getNovelDetailData,
@@ -51,8 +54,17 @@ class NovelDetailView extends GetView<NovelDetailController> {
               ),
               // 内容
               CustomScrollView(slivers: [
-                const SliverAppBar(
-                    pinned: true, forceMaterialTransparency: true),
+                SliverAppBar(
+                  pinned: true,
+                  forceMaterialTransparency: true,
+                  actions: [
+                    Builder(
+                        builder: (context) => IconButton(
+                            onPressed: () =>
+                                Scaffold.of(context).openEndDrawer(),
+                            icon: const Icon(Icons.messenger_outline)))
+                  ],
+                ),
                 ..._buildSlivers()
               ])
             ],
