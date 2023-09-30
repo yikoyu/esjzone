@@ -16,7 +16,6 @@ import 'package:esjzone/app/widgets/load_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 class NovelDetailController extends GetxController {
   LoadingViewController loadingViewController = LoadingViewController();
@@ -51,6 +50,7 @@ class NovelDetailController extends GetxController {
     super.onClose();
   }
 
+  /// 跳转搜索页
   void toSearch(String? label) {
     if (label == null) return;
 
@@ -58,10 +58,7 @@ class NovelDetailController extends GetxController {
         arguments: {'search': label}, transition: Transition.fadeIn);
   }
 
-  void toNovelRaw(String url) {
-    launchUrl(Uri.parse(url));
-  }
-
+  /// 跳转阅读页
   Future<void> toNovelRead(String? novelId, String? chapterId) async {
     bool canToNovelRead = novelId != null &&
         novelId.isNotEmpty &&
@@ -76,17 +73,19 @@ class NovelDetailController extends GetxController {
       return;
     }
 
-    updateDetail(chapterId);
+    updateActiveChapter(chapterId);
     final String tag = '$novelId-$chapterId';
     await Get.to(() => NovelReadView(uniqueTag: tag),
         arguments: {'novelId': novelId, 'chapterId': chapterId},
         transition: Transition.rightToLeft);
   }
 
-  void updateDetail(String chapterId) {
+  /// 更新阅读章节
+  void updateActiveChapter(String chapterId) {
     detail.update((val) => val?.activeChapterId = chapterId);
   }
 
+  /// 获取小说详情
   Future<void> getNovelDetailData() async {
     final EsjzoneParseData esjzone =
         EsjzoneParseData(EsjzoneHttp.getNovelDetialPage(novelId));
@@ -128,6 +127,7 @@ class NovelDetailController extends GetxController {
     }
   }
 
+  /// 开始阅读或继续阅读
   Future<void> onHandleStartRead() async {
     if (detail.value.activeChapterId != null &&
         detail.value.activeChapterId!.isNotEmpty) {
@@ -173,6 +173,7 @@ class NovelDetailController extends GetxController {
     }
   }
 
+  /// 查找第一个章节
   NovelChapterList? _chapterListFirstWhere(List<NovelChapterList> data) {
     NovelChapterList? firstChapter = data.firstWhereOrNull((element) {
       bool isChapter = element.type == 'chapter' &&
@@ -185,6 +186,7 @@ class NovelDetailController extends GetxController {
     return firstChapter;
   }
 
+  /// 点击收藏或取消收藏
   Future<void> onHandleFavorite() async {
     EasyLoading.show(status: '加载中...');
 

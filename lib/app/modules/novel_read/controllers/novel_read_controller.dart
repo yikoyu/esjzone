@@ -82,7 +82,7 @@ class NovelReadController extends GetxController {
 
     scrollController.jumpTo(0);
     await getReadDetail(novelId, chapterId);
-    detail.updateDetail(chapterId);
+    detail.updateActiveChapter(chapterId);
   }
 
   Future<void> onForumLikesLike() async {

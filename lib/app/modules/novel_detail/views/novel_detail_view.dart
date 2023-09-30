@@ -7,10 +7,8 @@
 import 'dart:ui';
 
 import 'package:esjzone/app/data/novel_detail_model.dart';
-import 'package:esjzone/app/data/novel_detail_star_model.dart';
 import 'package:esjzone/app/modules/novel_detail/widgets/rating_detail_panel.dart';
 import 'package:esjzone/app/widgets/cached_image.dart';
-import 'package:esjzone/app/widgets/link_text.dart';
 import 'package:esjzone/app/widgets/load_view.dart';
 import 'package:esjzone/app/widgets/novel/novel_chapters_list.dart';
 import 'package:flutter/material.dart';
@@ -19,6 +17,8 @@ import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
 import 'package:get/get.dart';
 
 import '../controllers/novel_detail_controller.dart';
+import '../widgets/novel_detail_actions.dart';
+import '../widgets/novel_detail_top.dart';
 
 class NovelDetailView extends GetView<NovelDetailController> {
   const NovelDetailView({Key? key, this.uniqueTag}) : super(key: key);
@@ -53,33 +53,48 @@ class NovelDetailView extends GetView<NovelDetailController> {
               CustomScrollView(slivers: [
                 const SliverAppBar(
                     pinned: true, forceMaterialTransparency: true),
-                Obx(() => SliverPadding(
-                    padding: const EdgeInsets.all(6),
-                    sliver: SliverToBoxAdapter(
-                      child: _buildDetail(controller.detail.value),
-                    ))),
-                const SliverToBoxAdapter(child: Divider()),
-                Obx(() => NovelChaptersList(
-                      activeChapterId: controller.detail.value.activeChapterId,
-                      chapterList: controller.chapterList,
-                      onTap: ({novelId, chapterId}) =>
-                          controller.toNovelRead(novelId, chapterId),
-                    ))
+                ..._buildSlivers()
               ])
             ],
           )),
     );
   }
 
+  List<Widget> _buildSlivers() {
+    return [
+      SliverPadding(
+          padding: const EdgeInsets.all(6),
+          sliver: SliverToBoxAdapter(
+            child: Obx(() => _buildDetail(controller.detail.value)),
+          )),
+      const SliverToBoxAdapter(child: Divider()),
+      Obx(() => NovelChaptersList(
+            activeChapterId: controller.detail.value.activeChapterId,
+            chapterList: controller.chapterList,
+            onTap: ({novelId, chapterId}) =>
+                controller.toNovelRead(novelId, chapterId),
+          ))
+    ];
+  }
+
   Widget _buildDetail(NovelDetail detail) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _buildDetailTop(detail),
+        NovelDetailTop(detail: detail),
         // 标签
+        const SizedBox(height: 12),
         _buildTagWrap(controller.tags),
+        const SizedBox(height: 12),
         // 操作按钮
-        _buildBtnWrap(),
+        // _buildBtnWrap(),
+        NovelDetailActions(
+          activeChapterId: controller.detail.value.activeChapterId,
+          isFavorite: controller.detail.value.isFavorite,
+          rawNovelLink: controller.detail.value.rawNovelLink,
+          onTapRead: controller.onHandleStartRead,
+          onTapFavorite: controller.onHandleFavorite,
+        ),
         const Divider(),
         // 小说简介
         Card(
@@ -89,105 +104,14 @@ class NovelDetailView extends GetView<NovelDetailController> {
             child: HtmlWidget(detail.description ?? ''),
           ),
         ),
-        Obx(() => _buildRatingDetailPanel(controller.rateDetail.value))
-      ],
-    );
-  }
-
-  Widget _buildRatingDetailPanel(NovelDetailStar rateDetail) {
-    return RatingDetailPanel(
-      rating: double.tryParse(rateDetail.totalRate ?? '0') ?? 0,
-      rateList: controller.rateList,
-      onTap: () {},
-    );
-  }
-
-  /// 顶部详情（标题、封面、作者、各种数据等）
-  Widget _buildDetailTop(NovelDetail detail) {
-    return Container(
-      alignment: Alignment.topCenter,
-      child: Column(children: [
-        // 标题
-        Text(
-          '${detail.title}',
-          style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-          textAlign: TextAlign.center,
-        ).paddingOnly(bottom: 6),
-        // 封面 && 小说信息
-        SizedBox(
-                width: 200,
-                child: AspectRatio(
-                    aspectRatio: 0.6875, child: CachedImage(detail.img)))
-            .paddingOnly(bottom: 6),
-        // 作者 && 更新
-        Wrap(
-          children: [
-            LinkText(
-              detail.author,
-              onTap: () => controller.toSearch(detail.author),
-            ),
-            const Text(' 著'),
-            Text(' | ${detail.updateTime} 更新'),
-          ],
-        ).paddingOnly(bottom: 6),
-        // 数据
-        Wrap(
-          children: [
-            Text('${detail.favorite} 收藏'),
-            Text(' / ${detail.views} 观看'),
-            Text(' / ${detail.words} 字'),
-            Text(' | ${detail.category}'),
-          ],
+        RatingDetailPanel(
+          rating:
+              double.tryParse(controller.rateDetail.value.totalRate ?? '0') ??
+                  0,
+          rateList: controller.rateList,
+          onTap: () {},
         ),
-      ]),
-    );
-  }
-
-  /// 操作按钮
-  Widget _buildBtnWrap() {
-    bool hasHistory = controller.detail.value.activeChapterId != null &&
-        controller.detail.value.activeChapterId!.isNotEmpty;
-
-    List<ElevatedButton> btnList = [
-      ElevatedButton.icon(
-          style: const ButtonStyle(visualDensity: VisualDensity.compact),
-          onPressed: controller.onHandleStartRead,
-          icon: const Icon(Icons.menu_book_outlined),
-          label: hasHistory
-              ? const Text('继续阅读', style: TextStyle(fontSize: 12))
-              : const Text('阅读', style: TextStyle(fontSize: 12))),
-    ];
-
-    if (controller.detail.value.isFavorite != null &&
-        controller.detail.value.isFavorite == true) {
-      btnList.add(ElevatedButton.icon(
-          style: const ButtonStyle(visualDensity: VisualDensity.compact),
-          onPressed: controller.onHandleFavorite,
-          icon: const Icon(Icons.favorite),
-          label: const Text('已收藏', style: TextStyle(fontSize: 12))));
-    } else {
-      btnList.add(ElevatedButton.icon(
-          style: const ButtonStyle(visualDensity: VisualDensity.compact),
-          onPressed: controller.onHandleFavorite,
-          icon: const Icon(Icons.favorite_outline),
-          label: const Text(
-            '收藏',
-            style: TextStyle(fontSize: 12),
-          )));
-    }
-
-    if (controller.detail.value.rawNovelLink != null) {
-      btnList.add(ElevatedButton.icon(
-          style: const ButtonStyle(visualDensity: VisualDensity.compact),
-          onPressed: () =>
-              controller.toNovelRaw(controller.detail.value.rawNovelLink!),
-          icon: const Icon(Icons.raw_on),
-          label: const Text('生肉', style: TextStyle(fontSize: 12))));
-    }
-
-    return Wrap(
-      spacing: 6,
-      children: btnList,
+      ],
     );
   }
 
@@ -202,10 +126,9 @@ class NovelDetailView extends GetView<NovelDetailController> {
         ));
 
     return Wrap(
-            spacing: 4,
-            runSpacing: 4,
-            alignment: WrapAlignment.start,
-            children: tagsList.toList())
-        .paddingSymmetric(vertical: 12);
+        spacing: 4,
+        runSpacing: 4,
+        alignment: WrapAlignment.start,
+        children: tagsList.toList());
   }
 }
