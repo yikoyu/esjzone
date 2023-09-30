@@ -30,7 +30,9 @@ class SearchNovelsView extends GetView<SearchNovelsController> {
         toolbarHeight: 36,
         enabled: false,
         initialValue: controller.search,
-        bottom: FilterBar(onChanged: controller.onFilterChange),
+        bottom: FilterBar(
+            initCategory: controller.categoryValue,
+            onChanged: controller.onFilterChange),
         onTap: () => Get.back(),
       ),
       body: EasyRefreshContainer(

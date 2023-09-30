@@ -5,6 +5,7 @@
  * @FilePath: \esjzone\lib\app\modules\search_novels\controllers\search_novels_controller.dart
  */
 import 'package:easy_refresh/easy_refresh.dart';
+import 'package:esjzone/app/utils/app_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:esjzone/app/data/novel_list_model.dart';
 import 'package:esjzone/app/utils/enum.dart';
@@ -15,15 +16,24 @@ class SearchNovelsController extends GetxController {
   EasyRefreshController easyRefreshController = EasyRefreshController(
       controlFinishLoad: true, controlFinishRefresh: true);
 
+  AppStorage<String> likeCategoryStorageController =
+      AppStorage<String>(AppStorageKeys.settingLikeNovelCategory);
+
   late final String? search;
   SortLabel sortValue = SortLabel.updated;
-  CategoryLabel categoryValue = CategoryLabel.all;
+  late CategoryLabel categoryValue;
   var novelList = <NovelList>[].obs;
   int page = 1;
 
   @override
   void onInit() {
     search = Get.arguments["search"];
+
+    // 读取记录的分类偏好
+    categoryValue =
+        stringToCategoryLabel(likeCategoryStorageController.read()) ??
+            CategoryLabel.all;
+
     super.onInit();
   }
 

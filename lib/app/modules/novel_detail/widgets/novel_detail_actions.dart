@@ -73,6 +73,6 @@ class NovelDetailActions extends StatelessWidget {
   }
 
   void toNovelRaw(String url) {
-    launchUrl(Uri.parse(url));
+    launchUrl(Uri.parse(url), mode: LaunchMode.externalApplication);
   }
 }

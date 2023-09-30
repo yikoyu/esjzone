@@ -12,7 +12,7 @@ class ReadNovelLikeButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Color primaryColor = Theme.of(context).primaryColor;
+    Color primaryColor = Theme.of(context).colorScheme.primary;
 
     return Container(
         padding: const EdgeInsets.all(6),
