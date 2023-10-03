@@ -15,8 +15,10 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
 
 class NovelReadController extends GetxController {
-  final NovelDetailController detail =
-      Get.put(NovelDetailController(), tag: Get.arguments['novelId']);
+  final NovelDetailController detail = Get.put(
+    NovelDetailController(initChapterId: Get.arguments['chapterId']),
+    tag: Get.arguments['novelId'],
+  );
   late final String novelId;
   late final String chapterId;
 
@@ -24,6 +26,8 @@ class NovelReadController extends GetxController {
   var comment = <CommentList>[].obs;
   ScrollController scrollController = ScrollController();
   LoadingViewController loadingViewController = LoadingViewController();
+
+  final GlobalKey chaptersDrawerKey = GlobalKey();
 
   @override
   void onInit() {
@@ -50,9 +54,9 @@ class NovelReadController extends GetxController {
     loadingViewController.loading();
 
     try {
-      NovelRead detail = await esjzone.novelChapterReadDetail();
+      NovelRead readDetailData = await esjzone.novelChapterReadDetail();
 
-      readDetail.value = detail;
+      readDetail.value = readDetailData;
       comment
         ..clear()
         ..addAll(await esjzone.commentList());

@@ -32,6 +32,7 @@ class NovelReadView extends GetView<NovelReadController> {
     return Scaffold(
       drawerEdgeDragWidth: 50,
       drawer: Obx(() => ReadNovelChaptersDrawer(
+            key: controller.chaptersDrawerKey,
             title: controller.readDetail.value.novelName ?? '',
             activeChapterId: controller.detail.detail.value.activeChapterId,
             list: controller.detail.chapterList,
@@ -44,6 +45,14 @@ class NovelReadView extends GetView<NovelReadController> {
           onErrorTap: controller.onLoad,
           onNetworkBlockedTap: controller.onLoad,
           child: Scrollbar(child: _build(context))),
+      onDrawerChanged: (isOpened) {
+        if (isOpened) {
+          WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+            dynamic currentState = controller.chaptersDrawerKey.currentState;
+            currentState?.scrollToActiveChapter();
+          });
+        }
+      },
     );
   }
 

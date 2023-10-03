@@ -18,6 +18,10 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
 
 class NovelDetailController extends GetxController {
+  final String? initChapterId;
+
+  NovelDetailController({this.initChapterId});
+
   LoadingViewController loadingViewController = LoadingViewController();
   late final String novelId;
 
@@ -107,6 +111,7 @@ class NovelDetailController extends GetxController {
 
       rateDetail.value = await esjzone.novelDetailStar();
       detail.value = await esjzone.novelDetail();
+      if (initChapterId != null) updateActiveChapter(initChapterId!);
 
       loadingViewController.success();
 

@@ -12,15 +12,19 @@ import 'package:get/get.dart';
 import 'novel_details_chapters_panel.dart';
 
 class NovelChaptersList extends StatelessWidget {
+  final ScrollController? scrollController;
   final bool showDetail;
   final bool sliver;
   final String? activeChapterId;
+  final Key? activeChapterKey;
   final List<NovelChapterList> chapterList;
   final void Function({String? novelId, String? chapterId})? onTap;
 
   const NovelChaptersList(
       {super.key,
+      this.scrollController,
       this.activeChapterId,
+      this.activeChapterKey,
       this.sliver = true,
       required this.chapterList,
       this.onTap,
@@ -36,6 +40,7 @@ class NovelChaptersList extends StatelessWidget {
     }
 
     return ListView.builder(
+        controller: scrollController,
         itemCount: chapterList.length,
         itemBuilder: ((context, index) =>
             _buildItem(context, chapterList[index])));
@@ -61,6 +66,7 @@ class NovelChaptersList extends StatelessWidget {
   // 章节
   Widget _buildItemChapter(BuildContext context, NovelChapterList item) {
     return Card(
+        key: activeChapterId == item.chapterId ? activeChapterKey : null,
         color: activeChapterId == item.chapterId
             ? Theme.of(context).colorScheme.secondaryContainer
             : null,
